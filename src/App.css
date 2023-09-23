@@ -1,0 +1,41 @@
+:root {
+  --primary-color: #1c4fc4;
+  --primary-filter: invert(19%) sepia(83%) saturate(2028%) hue-rotate(213deg)
+    brightness(107%) contrast(98%);
+  --background-color: #d1dfff;
+  --border-color: #ccc;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  grid-template-rows: min-content 1fr;
+}
+
+.btn-outline-primary {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-outline-primary img {
+  width: 20px;
+  filter: var(--primary-filter);
+}
+
+.btn-outline-primary:hover img {
+  filter: invert(100%);
+}
+
+.btn-primary img {
+  width: 20px;
+  filter: invert(100%);
+}
+
+.btn-primary:hover img {
+  filter: var(--primary-filter);
+}
+
+small {
+  color: red;
+}

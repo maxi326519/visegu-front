@@ -1,0 +1,71 @@
+.dropDown button {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  width: calc(100% - 20px);
+  padding: 10px;
+  padding-left: 15px;
+  margin: 5px 10px;
+  color: grey;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  background-color: inherit;
+}
+
+.dropDown button span {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.dropDown ul {
+  height: 0px;
+  margin: 0;
+  padding: 0 0 0 20px;
+  list-style: none;
+  opacity: 0;
+  overflow: hidden;
+  transition: 0.2s;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dropDown img {
+  width: 25px;
+  margin-right: 10px;
+}
+
+.dropDown button:hover {
+  color: var(--primary-color);
+  background-color: var(--background-color);
+}
+
+.dropDown button:hover img {
+  filter: var(--primary-filter);
+}
+
+.arrow {
+  width: 20px !important;
+  transform: rotate(180deg);
+  transition: 0.2s;
+}
+
+.open button {
+  color: var(--primary-color);
+  background-color: var(--background-color);
+}
+
+.open button img {
+  filter: var(--primary-filter);
+}
+
+.open ul {
+  opacity: 1;
+  height: 180px;
+  transition: 0.2s;
+}
+
+.open .arrow {
+  transform: rotate(0deg);
+  transition: 0.2s;
+}

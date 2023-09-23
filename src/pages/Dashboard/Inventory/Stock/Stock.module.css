@@ -1,0 +1,101 @@
+.dashboard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 100vh;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.dashboard h3 {
+  margin: 0;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+.searchFilters {
+  display: flex;
+  gap: 10px;
+}
+
+.searchFilters button {
+  border-color: var(--background-color);
+  background-color: var(--background-color);
+}
+
+.searchBar {
+  display: flex;
+}
+
+.searchBar input {
+  border-radius: 5px 0 0 5px;
+}
+
+.searchBar button {
+  border-radius: 0 5px 5px 0;
+}
+
+.btnContainer {
+  display: flex;
+  gap: 10px;
+}
+
+.table {
+  flex-grow: 1;
+  outline: 1px solid var(--border-color);
+  overflow: hidden;
+  table-layout: fixed;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.table .body {
+  flex-grow: 1;
+  position: relative;
+  overflow-y: auto;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+.table .body::-webkit-scrollbar {
+  width: 10px;
+  border-left: 1px solid var(--border-color);
+  height: 100%;
+}
+
+.table .body::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.table .body::-webkit-scrollbar-thumb {
+  background-color: var(--panel); /* color of the scroll thumb */
+  border-radius: 5px; /* roundness of the scroll thumb */
+}
+
+.emptyRows {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.firstRow {
+  display: grid;
+  grid-template-columns: 200px 1fr 150px 150px 150px 150px 50px;
+  gap: 10px;
+  padding: 10px;
+  outline: 1px solid var(--border-color);
+  padding-right: 20px;
+  background-color: var(--backgorund);
+}
+
+.firstRow th:nth-child(6) {
+  grid-column: 6 / 9;
+}

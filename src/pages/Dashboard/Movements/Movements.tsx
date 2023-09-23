@@ -1,0 +1,119 @@
+import { useMovements } from "../../../hooks/useMovements";
+import { Movement } from "../../../interfaces/Movements";
+import { useState } from "react";
+
+import MovementsRow from "./MovementsRow/MovementsRow";
+import Filters from "./Filters/Filters";
+import IngressForm from "./IngressForm/IngressForm";
+import EgressForm from "./EgressForm/EgressForm";
+import TransferForm from "./TransferForm/TransferForm";
+
+import styles from "./Movements.module.css";
+import ingressSvg from "../../../assets/icons/ingress.svg";
+import egressSvg from "../../../assets/icons/egress.svg";
+import transferSvg from "../../../assets/icons/transfer.svg";
+import searchSvg from "../../../assets/icons/search.svg";
+
+export default function Movements() {
+  const movements = useMovements();
+  const [search, setSearch] = useState<string>("");
+  const [form, setForm] = useState({
+    ingress: false,
+    egress: false,
+    transfer: false,
+  });
+
+  function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
+    setSearch(event.target.name);
+  }
+
+  function handleIngressForm() {
+    setForm({ ...form, ingress: !form.ingress });
+  }
+
+  function handleEgressForm() {
+    setForm({ ...form, egress: !form.egress });
+  }
+
+  function handleTransferForm() {
+    setForm({ ...form, transfer: !form.transfer });
+  }
+
+  return (
+    <div className={`toLeft ${styles.dashboard}`}>
+      {form.ingress && <IngressForm handleClose={handleIngressForm} handleSubmit={movements.setIngress} />}
+      {form.egress && <EgressForm handleClose={handleEgressForm} handleSubmit={movements.setEgress} />}
+      {form.transfer && <TransferForm handleClose={handleTransferForm} handleSubmit={movements.setTransfer} />}
+      <header>
+        <div className={styles.controls}>
+          <div className={styles.searchFilters}>
+            <div className={styles.searchBar}>
+              <input
+                className="form-control"
+                placeholder="Search movement"
+                value={search}
+                onChange={handleSearch}
+              />
+              <button className="btn btn-outline-primary" type="button">
+                <img src={searchSvg} alt="search" />
+              </button>
+            </div>
+            <Filters handleSubmit={() => { }} />
+          </div>
+          <div className={styles.btnContainer}>
+            <button
+              className="btn btn-outline-primary"
+              type="button"
+              onClick={handleIngressForm}
+            >
+              <img src={ingressSvg} alt="ingress" />
+              <span>Ingress</span>
+            </button>
+            <button
+              className="btn btn-outline-primary"
+              type="button"
+              onClick={handleEgressForm}
+            >
+              <img src={egressSvg} alt="egress" />
+              <span>Egress</span>
+            </button>
+            <button
+              className="btn btn-outline-primary"
+              type="button"
+              onClick={handleTransferForm}
+            >
+              <img src={transferSvg} alt="transfer" />
+              <span>Transfer</span>
+            </button>
+          </div>
+        </div>
+      </header>
+      <div className={styles.table}>
+        <div className={`${styles.row} ${styles.firstRow}`}>
+          <span>Date</span>
+          <span>Type</span>
+          <span>Quantity</span>
+          <span>Product</span>
+          <span>Storage</span>
+          <span>User</span>
+          <span>Actions</span>
+        </div>
+        <div className={styles.body}>
+          {movements.data?.length <= 0 ? (
+            <tr className={styles.emptyRows}>
+              <th>No hay propiedades</th>
+            </tr>
+          ) : (
+            movements.data?.map((movement: Movement) => (
+              <MovementsRow
+                key={movement.id}
+                movement={movement}
+                handleDelete={movements.delete}
+              />
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
