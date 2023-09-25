@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import Login from "./pages/Login/Login";
 import SideBarAccordion from "./components/SideBar/SideBarAccordion";
@@ -17,6 +18,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   const redirect = useNavigate();
+
+  axios.defaults.baseURL = "http://localhost:3001";
 
   useEffect(() => {
     redirect("dashboard");

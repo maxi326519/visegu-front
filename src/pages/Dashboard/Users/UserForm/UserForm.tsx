@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { User, UserError, UserRol, initUser, initUserError } from "../../../../interfaces/User";
+import { User, UserError, UserRol, UserStatus, initUser, initUserError } from "../../../../interfaces/User";
 
-import styles from "./UserForm.module.css";
 import Input from "../../../../components/Inputs/Input";
 import SelectInput from "../../../../components/Inputs/SelectInput";
+
+import styles from "./UserForm.module.css";
 
 export interface Props {
   data: User | null;
@@ -31,6 +32,7 @@ export default function UserForm({ data, handleClose, handleSubmit }: Props) {
     event.preventDefault();
 
     if (validations()) {
+      console.log("submit");
       handleSubmit(user);
       handleClose();
     }
@@ -41,18 +43,33 @@ export default function UserForm({ data, handleClose, handleSubmit }: Props) {
     let errors: UserError = initUserError();
     let value = true;
 
+    /* ROL */
+    if (user.rol === UserRol.ANY) {
+      errors.rol = "You must select a rol";
+      value = false;
+    }
+
+    /* STATUS */
+    if (user.status === UserStatus.ANY) {
+      errors.status = "You must select a status";
+      value = false;
+    }
+
+    /* NAME */
     if (user.name === "") {
       errors.name = "This field can not be blank";
       value = false;
     }
 
+    /* EMAIL */
     if (user.email === "") {
-      errors.name = "This field can not be blank";
+      errors.email = "This field can not be blank";
       value = false;
     }
 
-    if (user.password === "") {
-      errors.name = "This field can not be blank";
+    /* PASSWORD */
+    if (!data && user.password === "") {
+      errors.password = "This field can not be blank";
       value = false;
     }
 
@@ -82,18 +99,38 @@ export default function UserForm({ data, handleClose, handleSubmit }: Props) {
                 label: UserRol.ADMIN
               }
             ]}
+            error={error.rol}
+            handleChange={handleChange}
+          />
+          <SelectInput
+            name="status"
+            label="Status"
+            value={user.status}
+            list={[
+              {
+                id: UserStatus.ACTIVE,
+                label: UserStatus.ACTIVE
+              },
+              {
+                id: UserStatus.INACTIVE,
+                label: UserStatus.INACTIVE
+              }
+            ]}
+            error={error.status}
             handleChange={handleChange}
           />
           <Input
             name="name"
             label="Name"
             value={user.name}
+            error={error.name}
             handleChange={handleChange}
           />
           <Input
             name="email"
             label="Email"
             value={user.email}
+            error={error.email}
             handleChange={handleChange}
           />
           <Input
@@ -101,6 +138,7 @@ export default function UserForm({ data, handleClose, handleSubmit }: Props) {
             label="Password"
             type="password"
             value={user.password}
+            error={error.password}
             handleChange={handleChange}
           />
           <button className="btn btn-success" type="submit">

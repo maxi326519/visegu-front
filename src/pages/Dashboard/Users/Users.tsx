@@ -1,5 +1,5 @@
 import { User } from "../../../interfaces/User";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUsers } from "../../../hooks/useUser";
 
 import UserRow from "./UserRow/UserRow";
@@ -12,6 +12,10 @@ export default function Users() {
   const [form, setForm] = useState<boolean>(false);
   const [data, setData] = useState<User | null>(null);
 
+  useEffect(() => {
+    if (users.data) users.get();
+  }, [users]);
+
   function handleEdit(data: User) {
     setData(data);
     handleForm();
@@ -19,10 +23,11 @@ export default function Users() {
 
   function handleForm() {
     setForm(!form);
-    if (!form) setData(null);
+    if (form) setData(null);
   }
 
   function handleSubmit(user: User) {
+    console.log("submit 2");
     data ? users.update(user) : users.set(user)
   }
 

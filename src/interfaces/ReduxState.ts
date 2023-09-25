@@ -93,22 +93,7 @@ export const initStockState = (): StockState => ({
   filters: initStockFilters(),
 });
 
-export const initUserState = (): User[] => [
-  {
-    id: "ua",
-    rol: UserRol.ADMIN,
-    status: UserStatus.ACTIVE,
-    name: "Maxi",
-    email: "maxi@gmail.com",
-  },
-  {
-    id: "u1",
-    rol: UserRol.USER,
-    status: UserStatus.ACTIVE,
-    name: "Usuario 1",
-    email: "user@example.com",
-  },
-];
+export const initUserState = (): User[] => [];
 
 export const initStorageState = (): Storage[] => [
   {
