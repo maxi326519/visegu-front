@@ -1,21 +1,22 @@
-import { Dispatch, AnyAction } from 'redux';
-import { MyThunkAction } from '../../../interfaces/ReduxState';
+import { Dispatch, AnyAction } from "redux";
+import { MyThunkAction } from "../../../interfaces/ReduxState";
+import axios from "axios";
 
-// Constantes para las acciones de almacenamiento
-export const POST_STORAGE = 'POST_STORAGE';
-export const GET_STORAGE = 'GET_STORAGE';
-export const UPDATE_STORAGE = 'UPDATE_STORAGE';
-export const DELETE_STORAGE = 'DELETE_STORAGE';
+// Action constants
+export const POST_STORAGE = "POST_STORAGE";
+export const GET_STORAGE = "GET_STORAGE";
+export const UPDATE_STORAGE = "UPDATE_STORAGE";
+export const DELETE_STORAGE = "DELETE_STORAGE";
 
-// Funciones de acción para Storage
+// Action to post a storage
 export function postStorage(data: any): MyThunkAction {
   return async (dispatch: Dispatch<AnyAction>) => {
-    // Código para realizar una acción POST en Storage
     try {
-      // Lógica para enviar la solicitud y actualizar el estado si es necesario
+      const newStorage = await axios.post("/storages", data);
+
       dispatch({
         type: POST_STORAGE,
-        payload: data, // Puedes modificar esto según tus necesidades
+        payload: newStorage.data,
       });
     } catch (e: any) {
       throw new Error(e);
@@ -23,13 +24,15 @@ export function postStorage(data: any): MyThunkAction {
   };
 }
 
+// Action to get all storages
 export function getStorage(): MyThunkAction {
   return async (dispatch: Dispatch<AnyAction>) => {
-    // Código para realizar una acción GET en Storage
     try {
-      // Lógica para enviar la solicitud y actualizar el estado si es necesario
+      const allStorages = await axios.get("/storages");
+
       dispatch({
         type: GET_STORAGE,
+        payload: allStorages.data,
       });
     } catch (e: any) {
       throw new Error(e);
@@ -37,14 +40,15 @@ export function getStorage(): MyThunkAction {
   };
 }
 
+// Action to update a storage
 export function updateStorage(data: any): MyThunkAction {
   return async (dispatch: Dispatch<AnyAction>) => {
-    // Código para realizar una acción de actualización en Storage
     try {
-      // Lógica para enviar la solicitud y actualizar el estado si es necesario
+      await axios.patch("/storages", data);
+
       dispatch({
         type: UPDATE_STORAGE,
-        payload: data, // Puedes modificar esto según tus necesidades
+        payload: data,
       });
     } catch (e: any) {
       throw new Error(e);
@@ -52,14 +56,15 @@ export function updateStorage(data: any): MyThunkAction {
   };
 }
 
-export function deleteStorage(id: number): MyThunkAction {
+// Action to delete a storage
+export function deleteStorage(id: string): MyThunkAction {
   return async (dispatch: Dispatch<AnyAction>) => {
-    // Código para realizar una acción de eliminación en Storage
     try {
-      // Lógica para enviar la solicitud y actualizar el estado si es necesario
+      await axios.delete(`/storages/${id}`);
+
       dispatch({
         type: DELETE_STORAGE,
-        payload: id, // Puedes modificar esto según tus necesidades
+        payload: id,
       });
     } catch (e: any) {
       throw new Error(e);

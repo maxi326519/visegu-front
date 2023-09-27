@@ -1,6 +1,6 @@
-import { User } from "../../../interfaces/User";
 import { useEffect, useState } from "react";
 import { useUsers } from "../../../hooks/useUser";
+import { User } from "../../../interfaces/User";
 
 import UserRow from "./UserRow/UserRow";
 import UserForm from "./UserForm/UserForm";
@@ -12,22 +12,25 @@ export default function Users() {
   const [form, setForm] = useState<boolean>(false);
   const [data, setData] = useState<User | null>(null);
 
+  // Get users
   useEffect(() => {
-    if (users.data) users.get();
+    if (users.data.length <= 0) users.get();
   }, [users]);
 
+  // View form and edit user
   function handleEdit(data: User) {
     setData(data);
     handleForm();
   }
 
+  // Alternate form
   function handleForm() {
     setForm(!form);
     if (form) setData(null);
   }
 
+
   function handleSubmit(user: User) {
-    console.log("submit 2");
     data ? users.update(user) : users.set(user)
   }
 
@@ -54,7 +57,7 @@ export default function Users() {
         <div className={styles.body}>
           {users.data?.length <= 0 ? (
             <tr className={styles.emptyRows}>
-              <th>No hay propiedades</th>
+              <th>No hay usuarios</th>
             </tr>
           ) : (
             users.data?.map((user: User) => (

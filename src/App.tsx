@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import axios from "axios";
 
 import Login from "./pages/Login/Login";

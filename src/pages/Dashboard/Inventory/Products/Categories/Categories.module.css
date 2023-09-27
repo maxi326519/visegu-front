@@ -1,5 +1,6 @@
 .background {
   position: absolute;
+  z-index: 1000;
   top: 0;
   left: 0;
   display: flex;
@@ -78,18 +79,6 @@
 .formContainer input {
   flex-grow: 1;
   margin-right: 10px;
-  color: white;
-  background-color: #222;
-}
-
-.formContainer input:focus {
-  color: white;
-  background-color: #252525;
-}
-
-.formContainer input:hover {
-  border-color: white;
-  outline: 1px solid white;
 }
 
 .formContainer button {

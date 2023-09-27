@@ -1,96 +1,47 @@
-import { useDispatch } from "react-redux";
-import { useState } from "react";
-import swal from "sweetalert";
-
+import { useStorage } from "../../../../hooks/useStorage";
+import { useEffect, useState } from "react";
+import { Storage } from "../../../../interfaces/Storage";
 
 import styles from "./Storages.module.css";
-import { Storage } from "../../../../interfaces/Storage";
 import StorageRow from "./StorageRow/StorageRow";
+import StorageForm from "./StorageForm/StorageForm";
 
 export default function Storages() {
-  const dispatch = useDispatch();
-  const [categories, setCategories] = useState(false);
+  const storage = useStorage();
+  const [data, setData] = useState<Storage | null>(null);
+  const [form, setForm] = useState<boolean>(false);
 
-/*   const { list, page, ...properties } = useStorage(); */
+  // Get initail Storage
+  useEffect(() => {
+    if (storage.data.length <= 0) storage.get();
+  }, []);
 
-  const [dataView, setDataView] = useState<string>("");
-
-  function handleView(propertyId?: string) {
-    setDataView(propertyId || "");
-  }
-
+  // Set data to edit, and show form
   function handleEdit(data: Storage) {
-    /*     setDataEdit(data); */
-    handleClose();
+    setData(data);
+    handleForm();
   }
 
-  function handleClose() {
-    setCategories(!categories);
-    /*     if (categories) {
-          setDataEdit(undefined);
-        } */
+  // Show new storage form
+  function handleForm() {
+    setForm(!form);
+    if (form) setData(null);
   }
 
-  function handleSaveStorage(
-    property: Storage,
-    imagestoUpload: File[],
-    imagesToRemove: string[],
-    edit: boolean
-  ) {
-    /*     dispatch(openLoading());
-        (edit
-          ? properties.update(property, imagestoUpload, imagesToRemove)
-          : properties.add(property, imagestoUpload)
-        )
-          .then(() => {
-            dispatch(closeLoading());
-            handleClose();
-            swal("Guardado", "Se guardo el property correctamente", "success");
-          })
-          .catch((err: any) => {
-            dispatch(closeLoading());
-            swal("Error", "No se pudo guardar el property", "error");
-            console.log(err);
-          }); */
-  }
-
-  function handleDelete(storage: Storage) {
-    /*     swal({
-          text: "¿Seguro desea eliminar este property?",
-          icon: "warning",
-          buttons: {
-            Si: true,
-            No: true,
-          },
-        }).then((response: any) => {
-          if (response === "Si") {
-            dispatch(openLoading());
-            dispatch<any>(deleteStorage(property))
-              .then(() => {
-                dispatch(closeLoading());
-                swal(
-                  "Eliminado",
-                  "Se elimino el property correctamente",
-                  "success"
-                );
-              })
-              .catch((err: any) => {
-                dispatch(closeLoading());
-                swal("Error", "No se pudo eliminar el property", "error");
-                console.log(err);
-              });
-          }
-        }); */
+  // Post new storage or patch some storage
+  function handleSubmit(newStorage: Storage) {
+    data ? storage.update(newStorage) : storage.set(newStorage);
   }
 
   return (
     <div className={`toLeft ${styles.dashboard}`}>
+      {form && <StorageForm data={data} handleClose={handleForm} handleSubmit={handleSubmit} />}
       <header>
         <div className={styles.controls}>
           <button
             className="btn btn-outline-primary"
             type="button"
-            onClick={handleClose}
+            onClick={handleForm}
           >
             + New Storage
           </button>
@@ -98,41 +49,25 @@ export default function Storages() {
       </header>
       <div className={styles.table}>
         <div className={`${styles.row} ${styles.firstRow}`}>
-          <span>Sku Number</span>
-          <span>Item</span>
-          <span>Category</span>
+          <span>Storage</span>
+          <span>User</span>
           <span>Actions</span>
         </div>
-{/*         <div className={styles.body}>
-          {list.data.length <= 0 ? (
+        <div className={styles.body}>
+          {storage.data.length <= 0 ? (
             <tr className={styles.emptyRows}>
               <th>No hay propiedades</th>
             </tr>
           ) : (
-            list.data?.map((property: Storage) => (
+            storage.data?.map((property: Storage) => (
               <StorageRow
                 storage={property}
                 handleEdit={handleEdit}
-                handleView={handleView}
-                handleDelete={handleDelete}
+                handleDelete={storage.remove}
               />
             ))
           )}
         </div>
-        <div className={styles.pagination}>
-          <span>{list.totals} Propiedades</span>
-          <button
-            disabled={page.current <= 1}
-            type="button"
-            onClick={() => { console.log("Button prev page"); page.prevPage() }}
-          >{`<`}</button>
-          <span>{`${page.current} de ${page.totals}`}</span>
-          <button
-            disabled={page.current >= page.length}
-            type="button"
-            onClick={() => { console.log("Button next page"); page.nextPage() }}
-          >{`>`}</button>
-        </div> */}
       </div>
     </div>
   );

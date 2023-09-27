@@ -1,6 +1,7 @@
 import { useProducts } from "../../../../hooks/useProduct";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Product } from "../../../../interfaces/Product";
+import { Cache } from "../../../../interfaces/Categories";
 
 import ProductRow from "./ProductRow/ProductRow";
 import ProductForm from "./ProductForm/ProductForm";
@@ -16,6 +17,14 @@ export default function Products() {
   const [categories, setCategories] = useState<boolean>(false);
   const [data, setData] = useState<Product | null>(null);
   const [search, setSearch] = useState<string>("");
+
+  // Get initial product
+  useEffect(() => {
+    if (products.data.length <= 0) {
+      products.get();
+      products.categories.get();
+    }
+  }, []);
 
   function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
     setSearch(event.target.name);
@@ -39,10 +48,14 @@ export default function Products() {
     data ? products.update(product) : products.set(product)
   }
 
+  function handleUpdateCategories(cache: Cache) {
+    products.categories.update(cache);
+  }
+
   return (
     <div className={`toLeft ${styles.dashboard}`}>
       {form && <ProductForm data={data} handleClose={handleForm} handleSubmit={handleSubmit} />}
-      {categories && <Categories handleClose={handleForm} />}
+      {categories && <Categories data={products.categories.data} handleSubmit={handleUpdateCategories} handleClose={handleCategories} />}
       <div className={styles.controls}>
         <div className={styles.searchFilters}>
           <div className={styles.searchBar}>

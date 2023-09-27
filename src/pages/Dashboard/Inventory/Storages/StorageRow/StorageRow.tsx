@@ -1,42 +1,39 @@
-import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../interfaces/ReduxState";
 import { Storage } from "../../../../../interfaces/Storage";
 
 import style from "./StorageRow.module.css";
-import calendarSvg from "../../../../../assets/svg/calendar.svg";
-import editSvg from "../../../../../assets/svg/edit.svg";
-import deleteSvg from "../../../../../assets/svg/delete.svg";
-import img from "../../../../.././assets/img/img.png";
+import editSvg from "../../../../../assets/icons/edit.svg";
+import deleteSvg from "../../../../../assets/icons/remove.svg";
 
 interface Props {
   storage: Storage;
   handleEdit: (storage: Storage) => void;
-  handleView: (storageId: string) => void;
-  handleDelete: (storage: Storage) => void;
+  handleDelete: (storageId: string) => void;
 }
 
 export default function StorageRow({
   storage,
   handleEdit,
-  handleView,
   handleDelete,
 }: Props) {
-  const [error, setError] = useState(false);
-
-  /*   useEffect(() => {
-      if (!storage.registerType) {
-        setError(true);
-      } else {
-        setError(false);
-      }
-    }, [storage]); */
+  const user = useSelector((state: RootState) => state.users);
 
   return (
-    <tr className={`${style.row} ${error ? style.error : ""}`}>
+    <tr className={style.row}>
       <span>{storage.name}</span>
+      <span>{user.find((user) => user.id === storage.UserId[0])?.name}</span>
+      <button
+        className="btn btn-outline-primary"
+        type="button"
+        onClick={() => handleEdit(storage)}
+      >
+        <img src={editSvg} alt="edit" />
+      </button>
       <button
         className="btn btn-outline-danger"
         type="button"
-        onClick={() => handleDelete(storage)}
+        onClick={() => handleDelete(storage.id!)}
       >
         <img src={deleteSvg} alt="delete" />
       </button>

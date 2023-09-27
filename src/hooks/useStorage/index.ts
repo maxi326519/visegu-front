@@ -1,8 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
-import { postStorage, getStorage, updateStorage, deleteStorage } from "../../redux/actions/storage";
 import { RootState } from "../../interfaces/ReduxState";
 import { useState } from "react";
 import { Storage } from "../../interfaces/Storage";
+import {
+  postStorage,
+  getStorage,
+  updateStorage,
+  deleteStorage,
+} from "../../redux/actions/storage";
 import swal from "sweetalert";
 
 export interface UseStorage {
@@ -68,7 +73,7 @@ export function useStorage() {
       });
   }
 
-  async function removeStorageItem(id: number) {
+  async function removeStorageItem(id: string) {
     setLoading(true);
     await dispatch<any>(deleteStorage(id))
       .then(() => {

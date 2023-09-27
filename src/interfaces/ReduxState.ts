@@ -65,48 +65,18 @@ export const initLoginState = (): LoginState => ({
 });
 
 export const initProductsState = (): ProductsState => ({
-  data: [
-    {
-      id: "p1",
-      skuNumber: "asdasd",
-      description: "Description",
-      CategoryId: "c1",
-    },
-  ],
-  categories: [
-    {
-      id: "c1",
-      name: "Category 1",
-    },
-  ],
+  data: [],
+  categories: [],
 });
 
 export const initStockState = (): StockState => ({
-  data: [
-    {
-      id: "s1",
-      quantity: 1,
-      ProductId: "p1",
-      StorageId: "s1",
-    },
-  ],
+  data: [],
   filters: initStockFilters(),
 });
 
 export const initUserState = (): User[] => [];
 
-export const initStorageState = (): Storage[] => [
-  {
-    id: "st1",
-    name: "Storage 1",
-    UserId: ["u1"],
-  },
-  {
-    id: "st2",
-    name: "Storage 2",
-    UserId: ["u1"],
-  },
-];
+export const initStorageState = (): Storage[] => [];
 
 export const initMovementState = (): MovementState => ({
   data: [

@@ -36,23 +36,28 @@ export default function Stocks() {
     handleForm();
   }
 
+  // Show new stock form
   function handleForm() {
     setForm({ ...form, stock: !form.stock });
     if (!form.stock) setData(null);
   }
 
+  // Show ingress stock form
   function handleIngressForm() {
-    setForm({ ...form, stock: !form.ingress });
+    setForm({ ...form, ingress: !form.ingress });
   }
 
+  // Show egress stock form
   function handleEgressForm() {
-    setForm({ ...form, stock: !form.egress });
+    setForm({ ...form, egress: !form.egress });
   }
 
+  // Show transfer stock form
   function handleTransferForm() {
-    setForm({ ...form, stock: !form.transfer });
+    setForm({ ...form, transfer: !form.transfer });
   }
 
+  // Post new sotck or patch some sotck
   function handleSubmit(stock: Stock) {
     data ? stocks.update(stock) : stocks.set(stock)
   }

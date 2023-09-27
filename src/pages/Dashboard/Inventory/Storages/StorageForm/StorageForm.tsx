@@ -77,13 +77,15 @@ export default function StorageForm({ data, handleClose, handleSubmit }: Props) 
             name="name"
             label="Name"
             value={storage.name}
+            error={error.name}
             handleChange={handleChange}
           />
           <SelectInput
             name="users"
             label="Users"
-            value={""}
+            value={storage.id}
             list={users.map((users) => ({ id: users.id!, label: users.name }))}
+            error={error.UserId}
             handleChange={handleSelectUser}
           />
           <button className="btn btn-success" type="submit">

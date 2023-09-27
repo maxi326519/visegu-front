@@ -3,6 +3,8 @@ import {
   GET_PRODUCT,
   UPDATE_PRODUCT,
   DELETE_PRODUCT,
+  GET_CATEGORIES,
+  UPDATE_CATEGORIES,
 } from "../../actions/products";
 import {
   ProductsState,
@@ -11,10 +13,7 @@ import {
 
 const initialState: ProductsState = initProductsState();
 
-const productsReducer = (
-  state = initialState,
-  action: any
-): ProductsState => {
+const productsReducer = (state = initialState, action: any): ProductsState => {
   switch (action.type) {
     case POST_PRODUCT:
       return {
@@ -23,7 +22,10 @@ const productsReducer = (
       };
 
     case GET_PRODUCT:
-      return state;
+      return {
+        ...state,
+        data: action.payload,
+      };
 
     case UPDATE_PRODUCT:
       return {
@@ -39,9 +41,21 @@ const productsReducer = (
         data: state.data.filter((product) => product.id !== action.payload),
       };
 
+    case GET_CATEGORIES:
+      return {
+        ...state,
+        categories: action.payload,
+      };
+
+    case UPDATE_CATEGORIES:
+      return {
+        ...state,
+        categories: action.payload,
+      };
+
     default:
       return state;
   }
-}
+};
 
 export default productsReducer;
