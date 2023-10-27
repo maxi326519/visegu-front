@@ -1,6 +1,6 @@
 export interface Movement {
   id?: string;
-  date: Date;
+  date: Date | null;
   type: MovementType;
   quantity: number;
   UserId?: string;

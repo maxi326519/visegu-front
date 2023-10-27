@@ -1,19 +1,47 @@
-import { useState } from "react";
+import { StockFilters, initStockFilters } from "../../../../../interfaces/Stock";
+import { useEffect, useState } from "react";
+import { Categories } from "../../../../../interfaces/Categories";
+import { Storage } from "../../../../../interfaces/Storage";
+
+import SelectInput from "../../../../../components/Inputs/SelectInput";
 
 import style from "./Filter.module.css";
 import filterSvg from "../../../../../assets/icons/filter.svg";
 
 interface Props {
-  handleSubmit: () => void;
+  handleSubmit: (filters: StockFilters) => void;
+  filters: StockFilters;
+  storages: Storage[];
+  categories: Categories[];
 }
 
 export default function Filters({
   handleSubmit,
+  filters,
+  storages,
+  categories
 }: Props) {
-  const [filter, setFilter] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [filter, setFilter] = useState<StockFilters>(initStockFilters());
 
+  useEffect(() => {
+    setFilter(filters);
+  }, [filters]);
+
+  // Filter change
+  function handleChangeFilter(event: React.ChangeEvent<HTMLSelectElement>) {
+    setFilter({ ...filter, [event.target.name]: event.target.value });
+  }
+
+  // Toggle view menu
   function handleFilter() {
-    setFilter(!filter);
+    setOpen(!open);
+  }
+
+  // Submit filters data
+  function handleLocalSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    handleSubmit(filters);
   }
 
   return (
@@ -22,16 +50,29 @@ export default function Filters({
         <span>Filters</span>
         <img src={filterSvg} alt="filtros" />
       </button>
-      {filter ? (
-        <div className={style.filterContainer}>
+      {open ? (
+        <form className={style.filterContainer} onSubmit={handleLocalSubmit}>
+          <SelectInput
+            name="storage"
+            label="Storage"
+            list={storages.map((storage) => ({ id: storage.id!, label: storage.name }))}
+            value={filter.storage}
+            handleChange={handleChangeFilter}
+          />
+          <SelectInput
+            name="category"
+            label="Category"
+            list={categories.map((category) => ({ id: category.id!, label: category.name }))}
+            value={filter.category}
+            handleChange={handleChangeFilter}
+          />
           <button
             className="btn btn-success"
-            type="button"
-            onClick={handleSubmit}
+            type="submit"
           >
             Aplicar
           </button>
-        </div>
+        </form>
       ) : null}
     </div>
   );

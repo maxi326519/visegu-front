@@ -1,8 +1,8 @@
 import { AnyAction, Dispatch } from "redux";
 import { MyThunkAction } from "../../../interfaces/ReduxState";
 import { Movement } from "../../../interfaces/Movements";
-import axios from "axios";
 import { Stock } from "../../../interfaces/Stock";
+import axios from "axios";
 
 // Constantes de acciones
 export const POST_STOCK = "POST_STOCK";
@@ -21,7 +21,7 @@ export function postStock(stockData: Stock): MyThunkAction {
 
       dispatch({
         type: POST_STOCK,
-        payload: newStocks,
+        payload: newStocks.data,
       });
     } catch (e: any) {
       throw new Error(e);
@@ -33,13 +33,14 @@ export function postStock(stockData: Stock): MyThunkAction {
 export function getStock(): MyThunkAction {
   return async (dispatch: Dispatch<AnyAction>) => {
     try {
-      const allProduct = await axios.post("/stock");
+      const allProduct = await axios.get("/stock");
 
       dispatch({
         type: GET_STOCK,
-        payload: allProduct,
+        payload: allProduct.data,
       });
     } catch (e: any) {
+      console.log(e);
       throw new Error(e);
     }
   };
@@ -81,12 +82,15 @@ export function deleteStock(stockId: string): MyThunkAction {
 export function setIngressStock(movement: Movement): MyThunkAction {
   return async (dispatch: Dispatch<AnyAction>) => {
     try {
-      const response = await axios.post("/stock/ingress", movement);
+      console.log(movement);
+
+      const response = await axios.patch("/stock/ingress", movement);
 
       dispatch({
         type: SET_INGRESS_STOCK,
         payload: {
           Stock: response.data.Stock,
+          Product: response.data.Product,
           Movement: response.data.Movement,
         },
       });
@@ -100,12 +104,13 @@ export function setIngressStock(movement: Movement): MyThunkAction {
 export function setEgressStock(movement: Movement): MyThunkAction {
   return async (dispatch: Dispatch<AnyAction>) => {
     try {
-      const response = await axios.post("/stock/egress", movement);
+      const response = await axios.patch("/stock/egress", movement);
 
       dispatch({
         type: SET_EGRESS_STOCK,
         payload: {
           Stock: response.data.Stock,
+          Product: response.data.Product,
           Movement: response.data.Movement,
         },
       });
@@ -119,18 +124,21 @@ export function setEgressStock(movement: Movement): MyThunkAction {
 export function setTransferStock(movement: Movement): MyThunkAction {
   return async (dispatch: Dispatch<AnyAction>) => {
     try {
-      const response = await axios.post("/stock/transfer", movement);
+      const response = await axios.patch("/stock/transfer", movement);
+
+      const egressMovements = response.data.Movements.egress;
+      const ingressMovements = response.data.Movements.ingress;
 
       dispatch({
         type: SET_TRANSFER_STOCK,
         payload: {
           Stocks: {
-            egress: response.data.Stock.egress,
-            ingress: response.data.tock.ingress,
+            egress: response.data.Stocks.egress,
+            ingress: response.data.Stocks.ingress,
           },
           Movements: {
-            egress: response.data.Movements.egress,
-            ingress: response.data.Movements.ingress,
+            egress: { ...egressMovements, date: new Date(egressMovements.date) || null },
+            ingress: { ...ingressMovements, date: new Date(egressMovements.date) || null },
           },
         },
       });

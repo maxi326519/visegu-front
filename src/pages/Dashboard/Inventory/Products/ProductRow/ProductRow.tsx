@@ -19,20 +19,12 @@ export default function ProductRow({
   handleDelete,
 }: Props) {
   const categories = useSelector((state: RootState) => state.products.categories);
-  const [error, setError] = useState(false);
-
-  /*   useEffect(() => {
-      if (!product.registerType) {
-        setError(true);
-      } else {
-        setError(false);
-      }
-    }, [product]); */
 
   return (
-    <tr className={`${style.row} ${error ? style.error : ""}`}>
+    <tr className={style.row}>
       <span>{product.skuNumber}</span>
       <span>{product.description}</span>
+      <span>{product.amount}</span>
       <span>{categories.find((cat) => cat.id === product.CategoryId)?.name || "-"}</span>
       <button
         className="btn btn-outline-primary"

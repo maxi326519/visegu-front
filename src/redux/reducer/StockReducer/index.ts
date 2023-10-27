@@ -17,11 +17,14 @@ const stockReducer = (state = initialState, action: any) => {
     case POST_STOCK:
       return {
         ...state,
-        data: [...state.data, action.payload],
+        data: [...state.data, action.payload.Stock],
       };
 
     case GET_STOCK:
-      return action.payload;
+      return {
+        ...state,
+        data: action.payload,
+      };
 
     case UPDATE_STOCK:
       return {
@@ -53,34 +56,42 @@ const stockReducer = (state = initialState, action: any) => {
         data: state.data.map((stockItem: Stock) =>
           stockItem.id === action.payload.id
             ? {
-                ...stockItem,
-                quantity: stockItem.quantity - action.payload.quantity,
-              }
+              ...stockItem,
+              quantity: stockItem.quantity - action.payload.quantity,
+            }
             : stockItem
         ),
       };
 
     case SET_TRANSFER_STOCK:
+      console.log(action.payload);
+      const egressStock = action.payload.Stocks.egress;
+      const ingressStock = action.payload.Stocks.ingress;
+
+      // Update egress stock
+      let stock = state.data.map((item: Stock) =>
+        item.id === egressStock.id ? egressStock : item
+      );
+
+      // Get ingress stock to state
+      const ingressStockFromState = state.data.find(
+        (stock) => stock.id === ingressStock.id
+      );
+
+      // If exist
+      if (ingressStockFromState) {
+        // Rempalce it
+        stock = stock.map((item: Stock) =>
+          item.id === ingressStock.id ? ingressStock : item
+        );
+      } else {
+        // Else add it
+        stock = [...stock, ingressStock];
+      }
+
       return {
         ...state,
-        data: state.data.map((stockItem: Stock) => {
-          if (stockItem.id === action.payload.id) {
-            // Al stock de egreso le restamos
-            return {
-              ...stockItem,
-              quantity: stockItem.quantity - action.payload.quantity,
-            };
-          } else if (stockItem.StorageId === action.payload.Storage.ingress) {
-            // AL stock de ingreso le sumamos
-            return {
-              ...stockItem,
-              quantity: stockItem.quantity + action.payload.quantity,
-            };
-          } else {
-            // Si no es ninguno de los anteriores devolvemos igual
-            return stockItem;
-          }
-        }),
+        data: stock,
       };
 
     default:

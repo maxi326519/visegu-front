@@ -1,8 +1,8 @@
 export interface Stock {
   id?: string;
   quantity: number;
-  ProductId?: string;
-  StorageId?: string;
+  ProductId: string;
+  StorageId: string;
 }
 
 export interface StockFilters {
@@ -25,6 +25,8 @@ export const initStockFilters = (): StockFilters => ({
 
 export const initStock = (): Stock => ({
   quantity: 0,
+  ProductId: "",
+  StorageId: "",
 });
 
 export const initStockError = (): StockError => ({

@@ -35,7 +35,8 @@ export function getStorage(): MyThunkAction {
         payload: allStorages.data,
       });
     } catch (e: any) {
-      throw new Error(e);
+    console.log(e);
+    throw new Error(e);
     }
   };
 }

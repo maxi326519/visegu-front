@@ -1,6 +1,9 @@
+import { Stock, StockFilters, initStockFilters } from "../../../../interfaces/Stock";
+import { useEffect, useState } from "react";
+import { useProducts } from "../../../../hooks/useProduct";
+import { useStorage } from "../../../../hooks/useStorage";
 import { useStock } from "../../../../hooks/useStock";
-import { useState } from "react";
-import { Stock } from "../../../../interfaces/Stock";
+import { useUsers } from "../../../../hooks/useUser";
 
 import StockRow from "./StockRow/StockRow";
 import Filters from "./Filters/Filters";
@@ -17,9 +20,13 @@ import searchSvg from "../../../../assets/icons/search.svg";
 import printSvg from "../../../../assets/icons/printer.svg";
 
 export default function Stocks() {
+  const product = useProducts();
+  const storage = useStorage();
   const stocks = useStock();
+  const users = useUsers();
   const [data, setData] = useState<Stock | null>(null);
-  const [search, setSearch] = useState<string>("");
+  const [rows, setRows] = useState<Stock[]>([]);
+  const [filters, setFilters] = useState<StockFilters>(initStockFilters());
   const [form, setForm] = useState({
     stock: false,
     ingress: false,
@@ -27,13 +34,34 @@ export default function Stocks() {
     transfer: false,
   });
 
-  function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
-    setSearch(event.target.name);
-  }
+  // Get initial stock
+  useEffect(() => {
+    if (product.data.length <= 0) product.get();
+    if (storage.data.length <= 0) storage.get();
+    if (stocks.data.length <= 0) stocks.get();
+    if (users.data.length <= 0) users.get();
+  }, []);
+
+  useEffect(() => {
+    setRows(stocks.data.filter((stock) => {
+      const currentProduct = product.data.find((p) => p.id === stock.ProductId);
+
+      if (currentProduct?.description.toLocaleLowerCase().includes(filters.search.toLocaleLowerCase())) return true;
+      if (currentProduct?.skuNumber.toLocaleLowerCase().includes(filters.search.toLocaleLowerCase())) return true;
+      if (filters.category === currentProduct?.CategoryId) return true;
+      if (filters.storage === stock.StorageId) return true;
+      return false
+    }));
+  }, [filters, stocks.data]);
 
   function handleEdit(data: Stock) {
     setData(data);
     handleForm();
+  }
+
+  // Filter change
+  function handleChangeFilter(event: React.ChangeEvent<HTMLInputElement>) {
+    setFilters({ ...filters, [event.target.name]: event.target.value });
   }
 
   // Show new stock form
@@ -59,7 +87,7 @@ export default function Stocks() {
 
   // Post new sotck or patch some sotck
   function handleSubmit(stock: Stock) {
-    data ? stocks.update(stock) : stocks.set(stock)
+    data ? stocks.update(stock) : stocks.set(stock);
   }
 
   return (
@@ -75,14 +103,20 @@ export default function Stocks() {
               <input
                 className="form-control"
                 placeholder="Search stock"
-                value={search}
-                onChange={handleSearch}
+                name="search"
+                value={filters.search}
+                onChange={handleChangeFilter}
               />
               <button className="btn btn-outline-primary" type="button">
                 <img src={searchSvg} alt="search" />
               </button>
             </div>
-            <Filters handleSubmit={() => { }} />
+            <Filters
+              handleSubmit={setFilters}
+              filters={filters}
+              storages={storage.data}
+              categories={product.categories.data}
+            />
             <button className="btn btn-outline-primary" type="button">
               <img src={printSvg} alt="print" />
             </button>
@@ -128,21 +162,19 @@ export default function Stocks() {
           <span>Description</span>
           <span>Category</span>
           <span>Quantity</span>
-          <span>Stock</span>
-          <span>Actions</span>
+          <span>Storage</span>
         </div>
         <div className={styles.body}>
-          {stocks.data?.length <= 0 ? (
+          {rows?.length <= 0 ? (
             <tr className={styles.emptyRows}>
-              <th>No hay propiedades</th>
+              <th>No Stocks</th>
             </tr>
           ) : (
-            stocks.data?.map((stock: Stock) => (
+            rows?.map((stock: Stock) => (
               <StockRow
                 key={stock.id}
                 stock={stock}
                 handleEdit={handleEdit}
-                handleDelete={stocks.remove}
               />
             ))
           )}

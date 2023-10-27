@@ -25,7 +25,25 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
 
   // Movement Change
   function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
-    setMovement({ ...movement, [event.target.name]: event.target.value });
+    if (event.target.name === "egress") {
+      setMovement({
+        ...movement,
+        StorageId: {
+          egress: event.target.value,
+          ingress: movement.StorageId!.ingress,
+        }
+      });
+    } else if (event.target.name === "ingress") {
+      setMovement({
+        ...movement,
+        StorageId: {
+          egress: movement.StorageId!.egress,
+          ingress: event.target.value,
+        }
+      });
+    } else {
+      setMovement({ ...movement, [event.target.name]: event.target.value });
+    }
   }
 
   // Movement date change
@@ -56,7 +74,7 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
       value = false;
     }
 
-    // QUANTITY
+    // DATE
     if (movement.date === null) {
       errors.date = "You must add a date";
       value = false;
@@ -100,14 +118,6 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
             error={error.UserId}
             handleChange={handleChange}
           />
-          <SelectInput
-            name="StockId"
-            label="Stock"
-            value={movement.StockId}
-            list={stock.map((stock) => ({ id: stock.id!, label: product.find((product) => product.id === stock.ProductId)?.description! }))}
-            error={error.StockId}
-            handleChange={handleChange}
-          />
           <Input
             name="date"
             label="Date"
@@ -116,13 +126,6 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
             error={error.date}
             handleChange={handleChangeDate}
           />
-          <Input
-            name="quantity"
-            label="Quantity"
-            value={movement.quantity}
-            error={error.quantity}
-            handleChange={handleChange}
-          />
           <SelectInput
             name="egress"
             label="Storage egress"
@@ -130,14 +133,34 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
             list={storage.map((storage) => ({ id: storage.id!, label: storage.name }))}
             error={error.StorageId.egress}
             handleChange={handleChange}
-            disabled={true}
+          />
+          <SelectInput
+            name="StockId"
+            label="Stock"
+            value={movement.StockId}
+            list={stock
+              .filter((stock) => stock.StorageId === movement.StorageId?.egress) // Filter only stocks of the storage selected
+              .map((stock) => ({ id: stock.id!, label: product.find((product) => product.id === stock.ProductId)?.description! }))}
+            error={error.StockId}
+            handleChange={handleChange}
+            disabled={movement.UserId && movement.StorageId?.egress ? false : true}
           />
           <SelectInput
             name="ingress"
             label="Storage ingress"
             value={movement.StorageId?.ingress}
-            list={storage.map((storage) => ({ id: storage.id!, label: storage.name }))}
+            list={storage
+              .filter((stg) => stg.id !== movement.StorageId?.egress) // Filter only storages other than the one selected as egress
+              .map((storage) => ({ id: storage.id!, label: storage.name }))}
             error={error.StorageId.ingress}
+            handleChange={handleChange}
+            disabled={movement.UserId && movement.StorageId?.egress ? false : true}
+          />
+          <Input
+            name="quantity"
+            label="Quantity"
+            value={movement.quantity}
+            error={error.quantity}
             handleChange={handleChange}
           />
           <button className="btn btn-success" type="submit">

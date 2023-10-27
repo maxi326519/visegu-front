@@ -25,7 +25,17 @@ export default function EgressForm({ handleClose, handleSubmit }: Props) {
 
   // Movement Change
   function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
-    setMovement({ ...movement, [event.target.name]: event.target.value });
+    if (event.target.name === "egress") {
+      setMovement({
+        ...movement,
+        StorageId: {
+          egress: event.target.value,
+          ingress: "",
+        }
+      });
+    } else {
+      setMovement({ ...movement, [event.target.name]: event.target.value });
+    }
   }
 
   // Movement date change
@@ -94,13 +104,13 @@ export default function EgressForm({ handleClose, handleSubmit }: Props) {
             error={error.UserId}
             handleChange={handleChange}
           />
-          <SelectInput
-            name="StockId"
-            label="Stock"
-            value={movement.StockId}
-            list={stock.map((stock) => ({ id: stock.id!, label: product.find((product) => product.id === stock.ProductId)?.description! }))}
-            error={error.StockId}
-            handleChange={handleChange}
+          <Input
+            name="date"
+            label="Date"
+            type="date"
+            value={fetDateYYYYMMDD(movement.date)}
+            error={error.date}
+            handleChange={handleChangeDate}
           />
           <SelectInput
             name="egress"
@@ -109,15 +119,17 @@ export default function EgressForm({ handleClose, handleSubmit }: Props) {
             list={storage.map((storage) => ({ id: storage.id!, label: storage.name }))}
             error={error.StorageId.egress}
             handleChange={handleChange}
-            disabled={true}
           />
-          <Input
-            name="date"
-            label="Date"
-            type="date"
-            value={fetDateYYYYMMDD(movement.date)}
-            error={error.date}
-            handleChange={handleChangeDate}
+          <SelectInput
+            name="StockId"
+            label="Stock"
+            value={movement.StockId}
+            list={stock
+              .filter((stock) => stock.StorageId === movement.StorageId?.egress) // Filter only stocks of the storage selected
+              .map((stock) => ({ id: stock.id!, label: product.find((product) => product.id === stock.ProductId)?.description! }))}
+            error={error.StockId}
+            handleChange={handleChange}
+            disabled={movement.UserId && movement.StorageId?.egress ? false : true}
           />
           <Input
             name="quantity"

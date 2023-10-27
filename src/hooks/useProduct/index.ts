@@ -8,8 +8,8 @@ import {
   getProduct,
   updateProduct,
   deleteProduct,
-  updateCategories,
   getCategories,
+  updateCategories,
 } from "../../redux/actions/products";
 import swal from "sweetalert";
 
@@ -42,6 +42,7 @@ export function useProducts(): UseProducts {
       setLoading(false);
       swal("Creado", "Producto creado con éxito", "success");
     } catch (error) {
+      console.log(error);
       setLoading(false);
       swal(
         "Error",
@@ -57,6 +58,7 @@ export function useProducts(): UseProducts {
       await dispatch<any>(getProduct());
       setLoading(false);
     } catch (error) {
+      console.log(error);
       setLoading(false);
       swal(
         "Error",
@@ -73,6 +75,7 @@ export function useProducts(): UseProducts {
       setLoading(false);
       swal("Actualizado", "Producto actualizado con éxito", "success");
     } catch (error) {
+      console.log(error);
       setLoading(false);
       swal(
         "Error",
@@ -89,6 +92,7 @@ export function useProducts(): UseProducts {
       setLoading(false);
       swal("Eliminado", "Producto eliminado con éxito", "success");
     } catch (error) {
+      console.log(error);
       setLoading(false);
       swal(
         "Error",
@@ -98,13 +102,14 @@ export function useProducts(): UseProducts {
     }
   }
 
-  async function updateCategories(cache: Cache): Promise<any> {
+  async function updateCategoriesItems(cache: Cache): Promise<any> {
     setLoading(true);
     try {
       await dispatch<any>(updateCategories(cache));
       setLoading(false);
       swal("Creado", "Categorias actualizadas con éxito", "success");
     } catch (error) {
+      console.log(error);
       setLoading(false);
       swal(
         "Error",
@@ -120,6 +125,7 @@ export function useProducts(): UseProducts {
       await dispatch<any>(getCategories());
       setLoading(false);
     } catch (error) {
+      console.log(error);
       setLoading(false);
       swal(
         "Error",
@@ -139,7 +145,7 @@ export function useProducts(): UseProducts {
     categories: {
       data: categories,
       get: getAllCategories,
-      update: updateCategories,
+      update: updateCategoriesItems,
     },
   };
 }

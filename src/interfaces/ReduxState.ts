@@ -1,3 +1,4 @@
+import { Movement, MovementFilters, initMovementFilters } from "./Movements";
 import { Stock, StockFilters, initStockFilters } from "./Stock";
 import { User, UserRol, UserStatus } from "./User";
 import { ThunkAction } from "redux-thunk";
@@ -5,12 +6,6 @@ import { Categories } from "./Categories";
 import { AnyAction } from "redux";
 import { Product } from "./Product";
 import { Storage } from "./Storage";
-import {
-  Movement,
-  MovementFilters,
-  MovementType,
-  initMovementFilters,
-} from "./Movements";
 
 export interface LoginState {
   id: string;
@@ -79,19 +74,6 @@ export const initUserState = (): User[] => [];
 export const initStorageState = (): Storage[] => [];
 
 export const initMovementState = (): MovementState => ({
-  data: [
-    {
-      id: "h1",
-      date: new Date(),
-      type: MovementType.INGRESS,
-      quantity: 0,
-      StorageId: {
-        egress: "s1",
-        ingress: "s2",
-      },
-      UserId: "u1",
-      StockId: "st1",
-    },
-  ],
+  data: [],
   filters: initMovementFilters(),
 });

@@ -28,13 +28,14 @@ export function useStorage() {
     await dispatch<any>(postStorage(storage))
       .then(() => {
         setLoading(false);
-        swal("Creado", "Almacenamiento creado con éxito", "success");
+        swal("Created", "Storage created succesfully", "success");
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        console.log(error);
         setLoading(false);
         swal(
           "Error",
-          "Hubo un error al crear el almacenamiento, inténtelo más tarde",
+          "Error to create the storage, try later",
           "error"
         );
       });
@@ -46,11 +47,12 @@ export function useStorage() {
       .then(() => {
         setLoading(false);
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        console.log(error);
         setLoading(false);
         swal(
           "Error",
-          "Hubo un error al obtener los datos de almacenamiento, inténtelo más tarde",
+          "Error to get the storages, try later",
           "error"
         );
       });
@@ -61,32 +63,46 @@ export function useStorage() {
     await dispatch<any>(updateStorage(storage))
       .then(() => {
         setLoading(false);
-        swal("Actualizado", "Almacenamiento actualizado con éxito", "success");
+        swal("Updated", "Storage updated succesfully", "success");
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        console.log(error);
         setLoading(false);
         swal(
           "Error",
-          "Hubo un error al actualizar el almacenamiento, inténtelo más tarde",
+          "Error to update the storage, try later",
           "error"
         );
       });
   }
 
   async function removeStorageItem(id: string) {
-    setLoading(true);
-    await dispatch<any>(deleteStorage(id))
-      .then(() => {
-        setLoading(false);
-        swal("Eliminado", "Almacenamiento eliminado con éxito", "success");
-      })
-      .catch(() => {
-        setLoading(false);
-        swal(
-          "Error",
-          "Hubo un error al eliminar el almacenamiento, inténtelo más tarde",
-          "error"
-        );
+    swal({
+      icon: "info",
+      text: "Are you sure you want to delete this storage?",
+      buttons: {
+        Accept: true,
+        Cancel: true
+      }
+    })
+      .then(async (response) => {
+        if (response === "Accept") {
+          setLoading(true);
+          await dispatch<any>(deleteStorage(id))
+            .then(() => {
+              setLoading(false);
+              swal("Deleted", "Storage deleted succesfully", "success");
+            })
+            .catch((error: Error) => {
+              console.log(error);
+              setLoading(false);
+              swal(
+                "Error",
+                "Error to delete the storage, try later",
+                "error"
+              );
+            });
+        }
       });
   }
 

@@ -1,5 +1,7 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { reLogin } from "./redux/actions/login";
 import axios from "axios";
 
 import Login from "./pages/Login/Login";
@@ -17,36 +19,36 @@ import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
+  const dispatch = useDispatch();
   const redirect = useNavigate();
 
-  axios.defaults.baseURL = "http://localhost:3001";
+  axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    redirect("dashboard");
+    redirect("/login");
+    dispatch<any>(reLogin())
+      .then(() => redirect("/dashboard"))
+      .catch((error: Error) => console.log(error));
   }, []);
 
   return (
     <div className="App">
       <Routes>
-        <Route path="/login" element={<Login />} />
         <Route path="/reset-email" element={<ResetEmail />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
 
       <div className="dashboard">
         <SideBarAccordion />
         <Navbar />
         <Routes>
-          {/* USERS */}
           <Route path="/dashboard/users" element={<Users />} />
-
-          {/* INVENTORY */}
           <Route path="/dashboard/inventory/products" element={<Products />} />
           <Route path="/dashboard/inventory/stock" element={<Stocks />} />
           <Route path="/dashboard/inventory/storages" element={<Storages />} />
-
-          {/* MOVEMENTS */}
           <Route path="/dashboard/movements" element={<Movements />} />
+          {/*           <Route path="/dashboard/reports" element={<Reports />} /> */}
         </Routes>
       </div>
     </div>

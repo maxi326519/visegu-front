@@ -1,5 +1,3 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../interfaces/ReduxState";
 import { Storage } from "../../../../../interfaces/Storage";
 
 import style from "./StorageRow.module.css";
@@ -17,12 +15,10 @@ export default function StorageRow({
   handleEdit,
   handleDelete,
 }: Props) {
-  const user = useSelector((state: RootState) => state.users);
 
   return (
     <tr className={style.row}>
       <span>{storage.name}</span>
-      <span>{user.find((user) => user.id === storage.UserId[0])?.name}</span>
       <button
         className="btn btn-outline-primary"
         type="button"

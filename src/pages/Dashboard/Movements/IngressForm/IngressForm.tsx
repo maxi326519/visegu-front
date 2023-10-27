@@ -25,7 +25,17 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
 
   // Movement Change
   function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
-    setMovement({ ...movement, [event.target.name]: event.target.value });
+    if (event.target.name === "ingress") {
+      setMovement({
+        ...movement,
+        StorageId: {
+          egress: "",
+          ingress: event.target.value,
+        }
+      });
+    } else {
+      setMovement({ ...movement, [event.target.name]: event.target.value });
+    }
   }
 
   // Movement date change
@@ -35,7 +45,7 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
     }
   }
 
-  // Sbubmit data
+  // Submit data
   function handleLocalSubmit(event: React.FormEvent) {
     event.preventDefault();
 
@@ -69,7 +79,7 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
     }
 
     // STORAGE
-    if (movement.StorageId?.egress === "") {
+    if (movement.StorageId?.ingress === "") {
       errors.StorageId.egress = "You must select a storage";
       value = false;
     }
@@ -94,23 +104,6 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
             error={error.UserId}
             handleChange={handleChange}
           />
-          <SelectInput
-            name="StockId"
-            label="Stock"
-            value={movement.StockId}
-            list={stock.map((stock) => ({ id: stock.id!, label: product.find((product) => product.id === stock.ProductId)?.description! }))}
-            error={error.StockId}
-            handleChange={handleChange}
-          />
-          <SelectInput
-            name="egress"
-            label="Storage"
-            value={movement.StorageId?.egress}
-            list={storage.map((storage) => ({ id: storage.id!, label: storage.name }))}
-            error={error.StorageId.egress}
-            handleChange={handleChange}
-            disabled={true}
-          />
           <Input
             name="date"
             label="Date"
@@ -118,6 +111,25 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
             value={fetDateYYYYMMDD(movement.date)}
             error={error.date}
             handleChange={handleChangeDate}
+          />
+          <SelectInput
+            name="ingress"
+            label="Storage"
+            value={movement.StorageId?.ingress}
+            list={storage.map((storage) => ({ id: storage.id!, label: storage.name }))}
+            error={error.StorageId.ingress}
+            handleChange={handleChange}
+          />
+          <SelectInput
+            name="StockId"
+            label="Stock"
+            value={movement.StockId}
+            list={stock
+              .filter((stock) => stock.StorageId === movement.StorageId?.ingress) // Filter only stocks of the storage selected
+              .map((stock) => ({ id: stock.id!, label: product.find((product) => product.id === stock.ProductId)?.description! }))}
+            error={error.StockId}
+            handleChange={handleChange}
+            disabled={movement.UserId && movement.StorageId?.ingress ? false : true}
           />
           <Input
             name="quantity"

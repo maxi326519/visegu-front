@@ -1,10 +1,7 @@
 import { Storage, StorageError, initStorage, initStorageError } from "../../../../../interfaces/Storage";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../interfaces/ReduxState";
 
 import Input from "../../../../../components/Inputs/Input";
-import SelectInput from "../../../../../components/Inputs/SelectInput";
 
 import styles from "./StorageForm.module.css";
 
@@ -15,7 +12,6 @@ export interface Props {
 }
 
 export default function StorageForm({ data, handleClose, handleSubmit }: Props) {
-  const users = useSelector((state: RootState) => state.users);
   const [storage, setStorage] = useState<Storage>(initStorage());
   const [error, setError] = useState<StorageError>(initStorageError());
 
@@ -28,12 +24,6 @@ export default function StorageForm({ data, handleClose, handleSubmit }: Props) 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setStorage({ ...storage, [event.target.name]: event.target.value });
     setError({ ...error, [event.target.name]: "" });
-  }
-
-  // Set user change
-  function handleSelectUser(event: React.ChangeEvent<HTMLSelectElement>) {
-    setStorage({ ...storage, UserId: [event.target.value] });
-    setError({ ...error, UserId: "" });
   }
 
   // Sbubmit data
@@ -56,11 +46,6 @@ export default function StorageForm({ data, handleClose, handleSubmit }: Props) 
       value = false;
     }
 
-    if (storage.UserId.length <= 0) {
-      errors.UserId = "You must select a user";
-      value = false;
-    }
-
     setError(errors);
     return value;
   }
@@ -79,14 +64,6 @@ export default function StorageForm({ data, handleClose, handleSubmit }: Props) 
             value={storage.name}
             error={error.name}
             handleChange={handleChange}
-          />
-          <SelectInput
-            name="users"
-            label="Users"
-            value={storage.id}
-            list={users.map((users) => ({ id: users.id!, label: users.name }))}
-            error={error.UserId}
-            handleChange={handleSelectUser}
           />
           <button className="btn btn-success" type="submit">
             Save

@@ -15,7 +15,7 @@ export default function Users() {
   // Get users
   useEffect(() => {
     if (users.data.length <= 0) users.get();
-  }, [users]);
+  }, []);
 
   // View form and edit user
   function handleEdit(data: User) {
@@ -57,7 +57,7 @@ export default function Users() {
         <div className={styles.body}>
           {users.data?.length <= 0 ? (
             <tr className={styles.emptyRows}>
-              <th>No hay usuarios</th>
+              <th>No Users</th>
             </tr>
           ) : (
             users.data?.map((user: User) => (

@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
-import { movementReducer } from "./HistoryReducer";
 import { loadingReducer } from "./LoadingReducer";
+import { movementReducer } from "./MovementReducer";
 import productsReducer from "./ProductReducer";
 import stockReducer from "./StockReducer";
 import StorageReducer from "./StorageReducer";

@@ -1,7 +1,7 @@
 import { MyThunkAction } from "../../../interfaces/ReduxState";
 import { Product } from "../../../interfaces/Product";
-import axios from "axios";
 import { Cache } from "../../../interfaces/Categories";
+import axios from "axios";
 
 // Definir constantes para las acciones
 export const POST_PRODUCT = "POST_PRODUCT";
@@ -38,6 +38,7 @@ export function getProduct(): MyThunkAction {
         payload: allProduct.data,
       });
     } catch (error: any) {
+      console.log(error);
       throw new Error(error);
     }
   };
@@ -79,12 +80,18 @@ export function deleteProduct(productId: string): MyThunkAction {
 export function updateCategories(cache: Cache): MyThunkAction {
   return async (dispatch) => {
     try {
+      let response: any;
+
       await Promise.all([
         cache.new.map((cat) => axios.post("/categories", cat)),
         cache.remove.map((cat) => axios.delete(`/categories/${cat.id}`)),
-      ]);
+      ]).then(() => {
+        console.log("Actualizado");
+      });
 
-      const response = await axios.get("/categories");
+      response = await axios.get("/categories");
+
+      console.log(response);
 
       dispatch({
         type: UPDATE_CATEGORIES,

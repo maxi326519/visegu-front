@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { RootState } from "../../interfaces/ReduxState";
 import { Movement } from "../../interfaces/Movements";
 import { Stock } from "../../interfaces/Stock";
@@ -7,7 +7,6 @@ import {
   postStock,
   getStock,
   updateStock,
-  deleteStock,
   setIngressStock,
   setEgressStock,
   setTransferStock,
@@ -19,7 +18,6 @@ export interface UseStock {
   set: (stock: Stock) => void;
   get: () => void;
   update: (stock: Stock) => void;
-  remove: (stockId: number) => void;
   setIngress: (stock: Stock) => void;
   setEgress: (stock: Stock) => void;
   setTransfer: (movement: Movement) => void;
@@ -37,11 +35,12 @@ export function useStock() {
       .then(() => {
         setLoading(false);
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        console.log(error);
         setLoading(false);
         swal(
           "Error",
-          "Hubo un error al cargar los datos de stock, inténtelo más tarde",
+          "Error to get the stock, try later",
           "error"
         );
       });
@@ -52,14 +51,15 @@ export function useStock() {
     await dispatch<any>(postStock(stock))
       .then(() => {
         setLoading(false);
-        swal("Creado", "Stock creado con éxito", "success");
+        swal("Created", "Stock created successfully", "success");
         getStockData(); // Actualiza los datos de stock después de crear uno nuevo
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        console.log(error);
         setLoading(false);
         swal(
           "Error",
-          "Hubo un error al crear el stock, inténtelo más tarde",
+          "Error to create the stock, try later",
           "error"
         );
       });
@@ -70,32 +70,15 @@ export function useStock() {
     await dispatch<any>(updateStock(stock))
       .then(() => {
         setLoading(false);
-        swal("Actualizado", "Stock actualizado con éxito", "success");
+        swal("Updated", "Stock updated succesfully", "success");
         getStockData(); // Actualiza los datos de stock después de actualizar uno existente
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        console.log(error);
         setLoading(false);
         swal(
           "Error",
-          "Hubo un error al actualizar el stock, inténtelo más tarde",
-          "error"
-        );
-      });
-  }
-
-  async function removeStock(stockId: string) {
-    setLoading(true);
-    await dispatch<any>(deleteStock(stockId))
-      .then(() => {
-        setLoading(false);
-        swal("Eliminado", "Stock eliminado con éxito", "success");
-        getStockData(); // Actualiza los datos de stock después de eliminar uno existente
-      })
-      .catch(() => {
-        setLoading(false);
-        swal(
-          "Error",
-          "Hubo un error al eliminar el stock, inténtelo más tarde",
+          "Error to update the stock, try later",
           "error"
         );
       });
@@ -106,14 +89,15 @@ export function useStock() {
     await dispatch<any>(setIngressStock(movement))
       .then(() => {
         setLoading(false);
-        swal("Ingreso", "Ingreso de stock registrado con éxito", "success");
+        swal("Successful ingress", "Stock ingress successfully", "success");
         getStockData(); // Actualiza los datos de stock después de registrar el ingreso
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        console.log(error);
         setLoading(false);
         swal(
           "Error",
-          "Hubo un error al registrar el ingreso de stock, inténtelo más tarde",
+          "Error to set the ingress, try later",
           "error"
         );
       });
@@ -124,14 +108,15 @@ export function useStock() {
     await dispatch<any>(setEgressStock(movement))
       .then(() => {
         setLoading(false);
-        swal("Egreso", "Egreso de stock registrado con éxito", "success");
+        swal("Successful egress", "Egreso de stock registrado con éxito", "success");
         getStockData(); // Actualiza los datos de stock después de registrar el egreso
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        console.log(error);
         setLoading(false);
         swal(
           "Error",
-          "Hubo un error al registrar el egreso de stock, inténtelo más tarde",
+          "Error to set the egress, try later",
           "error"
         );
       });
@@ -143,17 +128,18 @@ export function useStock() {
       .then(() => {
         setLoading(false);
         swal(
-          "Transferencia",
-          "Transferencia de stock realizada con éxito",
+          "Successful transfer",
+          "Stock transfer succesfully",
           "success"
         );
         getStockData(); // Actualiza los datos de stock después de realizar la transferencia
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        console.log(error);
         setLoading(false);
         swal(
           "Error",
-          "Hubo un error al realizar la transferencia de stock, inténtelo más tarde",
+          "Error to set the tranfer, try later",
           "error"
         );
       });
@@ -165,7 +151,6 @@ export function useStock() {
     set: setStock,
     get: getStockData,
     update: updateStockData,
-    remove: removeStock,
     setIngress: ingressStock,
     setEgress: egressStock,
     setTransfer: transferStock,

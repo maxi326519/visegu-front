@@ -47,7 +47,7 @@ export default function MovementsRow({ movement, handleDelete }: Props) {
 
   return (
     <tr className={style.row}>
-      <span>{dateFormat(movement.date)}</span>
+      <span>{movement.date ? dateFormat(movement.date) : ""}</span>
       <span>{movement.type}</span>
       <span>{data.quantity}</span>
       <span>{data.itemName}</span>

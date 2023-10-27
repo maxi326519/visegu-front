@@ -1,6 +1,7 @@
 import { useMovements } from "../../../hooks/useMovements";
 import { Movement } from "../../../interfaces/Movements";
 import { useState } from "react";
+import { useStock } from "../../../hooks/useStock";
 
 import MovementsRow from "./MovementsRow/MovementsRow";
 import Filters from "./Filters/Filters";
@@ -16,6 +17,7 @@ import searchSvg from "../../../assets/icons/search.svg";
 
 export default function Movements() {
   const movements = useMovements();
+  const stock = useStock();
   const [search, setSearch] = useState<string>("");
   const [form, setForm] = useState({
     ingress: false,
@@ -41,9 +43,9 @@ export default function Movements() {
 
   return (
     <div className={`toLeft ${styles.dashboard}`}>
-      {form.ingress && <IngressForm handleClose={handleIngressForm} handleSubmit={movements.setIngress} />}
-      {form.egress && <EgressForm handleClose={handleEgressForm} handleSubmit={movements.setEgress} />}
-      {form.transfer && <TransferForm handleClose={handleTransferForm} handleSubmit={movements.setTransfer} />}
+      {form.ingress && <IngressForm handleClose={handleIngressForm} handleSubmit={stock.setIngress} />}
+      {form.egress && <EgressForm handleClose={handleEgressForm} handleSubmit={stock.setEgress} />}
+      {form.transfer && <TransferForm handleClose={handleTransferForm} handleSubmit={stock.setTransfer} />}
       <header>
         <div className={styles.controls}>
           <div className={styles.searchFilters}>
@@ -101,7 +103,7 @@ export default function Movements() {
         <div className={styles.body}>
           {movements.data?.length <= 0 ? (
             <tr className={styles.emptyRows}>
-              <th>No hay propiedades</th>
+              <th>No Movements</th>
             </tr>
           ) : (
             movements.data?.map((movement: Movement) => (

@@ -7,9 +7,16 @@ import {
   UPDATE_CATEGORIES,
 } from "../../actions/products";
 import {
+  POST_STOCK,
+  SET_EGRESS_STOCK,
+  SET_INGRESS_STOCK,
+  SET_TRANSFER_STOCK
+} from "../../actions/stock";
+import {
   ProductsState,
   initProductsState,
 } from "../../../interfaces/ReduxState";
+import { Product } from "../../../interfaces/Product";
 
 const initialState: ProductsState = initProductsState();
 
@@ -53,6 +60,37 @@ const productsReducer = (state = initialState, action: any): ProductsState => {
         categories: action.payload,
       };
 
+    case POST_STOCK:
+      console.log(action.payload);
+      return {
+        ...state,
+        data: state.data.map((product) =>
+          product.id === action.payload.Stock.ProductId
+            ? { ...product, amount: Number(action.payload.Stock.quantity) }
+            : product
+        )
+      }
+
+    case SET_INGRESS_STOCK:
+      return {
+        ...state,
+        data: state.data.map((product) =>
+          product.id === action.payload.Stock.ProductId
+            ? action.payload.Product
+            : product
+        )
+      }
+
+    case SET_EGRESS_STOCK:
+      return {
+        ...state,
+        data: state.data.map((product) =>
+          product.id === action.payload.Stock.ProductId
+            ? action.payload.Product
+            : product
+        )
+      }
+      
     default:
       return state;
   }

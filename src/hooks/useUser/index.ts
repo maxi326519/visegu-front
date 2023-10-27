@@ -29,13 +29,14 @@ export function useUsers() {
     await dispatch<any>(postUser(user))
       .then(() => {
         setLoading(false);
-        swal("Creado", "Almacenamiento creado con éxito", "success");
+        swal("Created", "User created succesfully", "success");
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        console.log(error);
         setLoading(false);
         swal(
           "Error",
-          "Hubo un error al crear el almacenamiento, inténtelo más tarde",
+          "Error to create the user, try later",
           "error"
         );
       });
@@ -47,11 +48,12 @@ export function useUsers() {
       .then(() => {
         setLoading(false);
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        console.log(error);
         setLoading(false);
         swal(
           "Error",
-          "Hubo un error al obtener los datos de almacenamiento, inténtelo más tarde",
+          "Error to get the storages, try later",
           "error"
         );
       });
@@ -62,32 +64,46 @@ export function useUsers() {
     await dispatch<any>(updateUser(user))
       .then(() => {
         setLoading(false);
-        swal("Actualizado", "Almacenamiento actualizado con éxito", "success");
+        swal("Updated", "User updated succesfully", "success");
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        console.log(error);
         setLoading(false);
         swal(
           "Error",
-          "Hubo un error al actualizar el almacenamiento, inténtelo más tarde",
+          "Error to update the user, try later",
           "error"
         );
       });
   }
 
   async function removeUsers(userId: string) {
-    setLoading(true);
-    await dispatch<any>(deleteUser(userId))
-      .then(() => {
-        setLoading(false);
-        swal("Eliminado", "Almacenamiento eliminado con éxito", "success");
-      })
-      .catch(() => {
-        setLoading(false);
-        swal(
-          "Error",
-          "Hubo un error al eliminar el almacenamiento, inténtelo más tarde",
-          "error"
-        );
+    swal({
+      icon: "info",
+      text: "Are you sure you want to delete this user?",
+      buttons: {
+        Accept: true,
+        Cancel: true
+      }
+    })
+      .then(async (response) => {
+        if (response = "Accept") {
+          setLoading(true);
+          await dispatch<any>(deleteUser(userId))
+            .then(() => {
+              setLoading(false);
+              swal("Deleted", "User deleted succesfully", "success");
+            })
+            .catch((error: Error) => {
+              console.log(error);
+              setLoading(false);
+              swal(
+                "Error",
+                "Hubo un error al eliminar el almacenamiento, try later",
+                "error"
+              );
+            });
+        }
       });
   }
 

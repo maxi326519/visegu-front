@@ -16,6 +16,7 @@ export default function Products() {
   const [form, setForm] = useState<boolean>(false);
   const [categories, setCategories] = useState<boolean>(false);
   const [data, setData] = useState<Product | null>(null);
+  const [rows, setRows] = useState<Product[]>([]);
   const [search, setSearch] = useState<string>("");
 
   // Get initial product
@@ -26,8 +27,17 @@ export default function Products() {
     }
   }, []);
 
+  useEffect(() => {
+    setRows(products.data.filter((product) => {
+      if (search === "") return true
+      if (product.description.toLocaleLowerCase().includes(search.toLocaleLowerCase())) return true
+      if (product.skuNumber.toLocaleLowerCase().includes(search.toLocaleLowerCase())) return true
+      return false
+    }));
+  }, [search, products.data]);
+
   function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
-    setSearch(event.target.name);
+    setSearch(event.target.value);
   }
 
   function handleEdit(data: Product) {
@@ -92,16 +102,17 @@ export default function Products() {
         <div className={`${styles.row} ${styles.firstRow}`}>
           <span>SKU number</span>
           <span>Description</span>
+          <span>Quantity</span>
           <span>Category</span>
           <span>Actions</span>
         </div>
         <div className={styles.body}>
-          {products.data?.length <= 0 ? (
+          {rows?.length <= 0 ? (
             <tr className={styles.emptyRows}>
-              <th>No hay propiedades</th>
+              <th>No Products</th>
             </tr>
           ) : (
-            products.data?.map((product: Product) => (
+            rows?.map((product: Product) => (
               <ProductRow
                 key={product.id}
                 product={product}
