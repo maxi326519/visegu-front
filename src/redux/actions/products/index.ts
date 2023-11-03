@@ -1,15 +1,22 @@
 import { MyThunkAction } from "../../../interfaces/ReduxState";
 import { Product } from "../../../interfaces/Product";
-import { Cache } from "../../../interfaces/Categories";
+import { Cache, Categories } from "../../../interfaces/Categories";
 import axios from "axios";
+import { Suppliers } from "../../../interfaces/Suppliers";
 
-// Definir constantes para las acciones
+// Product
 export const POST_PRODUCT = "POST_PRODUCT";
 export const GET_PRODUCT = "GET_PRODUCT";
 export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
+
+// Categories
 export const UPDATE_CATEGORIES = "UPDATE_CATEGORIES";
 export const GET_CATEGORIES = "GET_CATEGORIES";
+
+// Suppliers
+export const UPDATE_SUPPLIERS = "UPDATE_SUPPLIERS";
+export const GET_SUPPLIERS = "GET_SUPPLIERS";
 
 // Acción para agregar un producto
 export function postProduct(product: Product): MyThunkAction {
@@ -76,26 +83,31 @@ export function deleteProduct(productId: string): MyThunkAction {
   };
 }
 
+
 // Acción para actualizar las categorias
 export function updateCategories(cache: Cache): MyThunkAction {
   return async (dispatch) => {
     try {
-      let response: any;
+      // Post new categories
+      const postResponse = await Promise.all([...cache.new.map((cat) => axios.post("/categories", cat))]);
 
-      await Promise.all([
-        cache.new.map((cat) => axios.post("/categories", cat)),
-        cache.remove.map((cat) => axios.delete(`/categories/${cat.id}`)),
-      ]).then(() => {
-        console.log("Actualizado");
+      // Delete categories
+      await Promise.all([...cache.remove.map((cat) => axios.delete(`/categories/${cat.id}`))]);
+
+      // New categories
+      let categories: Categories[] = [];
+
+      // Get new categories
+      postResponse.forEach((response) => {
+        categories.push(response.data as Suppliers);
       });
-
-      response = await axios.get("/categories");
-
-      console.log(response);
 
       dispatch({
         type: UPDATE_CATEGORIES,
-        payload: response.data,
+        payload: {
+          new: categories,
+          remove: cache.remove
+        },
       });
     } catch (error: any) {
       throw new Error(error);
@@ -112,6 +124,54 @@ export function getCategories(): MyThunkAction {
       dispatch({
         type: GET_CATEGORIES,
         payload: allCategories.data,
+      });
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+}
+
+
+// Acción para actualizar los proveedores
+export function updateSuppliers(cache: Cache): MyThunkAction {
+  return async (dispatch) => {
+    try {
+      // Post new suppliers
+      const postResponse = await Promise.all([...cache.new.map((cat) => axios.post("/suppliers", cat))]);
+
+      // Delete suppliers
+      await Promise.all([...cache.remove.map((cat) => axios.delete(`/suppliers/${cat.id}`))]);
+
+      // New suppliers
+      let suppliers: Suppliers[] = [];
+
+      // Get new suppliers
+      postResponse.forEach((response) => {
+        suppliers.push(response.data as Suppliers);
+      });
+
+      dispatch({
+        type: UPDATE_SUPPLIERS,
+        payload: {
+          new: suppliers,
+          remove: cache.remove
+        },
+      });
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+}
+
+// Acción para obtener todas los proveedores
+export function getSuppliers(): MyThunkAction {
+  return async (dispatch) => {
+    try {
+      const allSuppliers = await axios.get("/suppliers");
+
+      dispatch({
+        type: GET_SUPPLIERS,
+        payload: allSuppliers.data,
       });
     } catch (error: any) {
       throw new Error(error);

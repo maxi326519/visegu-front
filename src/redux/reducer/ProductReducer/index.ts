@@ -5,6 +5,8 @@ import {
   DELETE_PRODUCT,
   GET_CATEGORIES,
   UPDATE_CATEGORIES,
+  GET_SUPPLIERS,
+  UPDATE_SUPPLIERS,
 } from "../../actions/products";
 import {
   POST_STOCK,
@@ -17,6 +19,8 @@ import {
   initProductsState,
 } from "../../../interfaces/ReduxState";
 import { Product } from "../../../interfaces/Product";
+import { Suppliers } from "../../../interfaces/Suppliers";
+import { Categories } from "../../../interfaces/Categories";
 
 const initialState: ProductsState = initProductsState();
 
@@ -57,7 +61,21 @@ const productsReducer = (state = initialState, action: any): ProductsState => {
     case UPDATE_CATEGORIES:
       return {
         ...state,
-        categories: action.payload,
+        categories: [...state.categories, ...action.payload.new]
+          .filter((supplier: Categories) => !action.payload.remove.some(((item: Categories) => item.id === supplier.id)))
+      };
+
+    case UPDATE_SUPPLIERS:
+      return {
+        ...state,
+        suppliers: [...state.suppliers, ...action.payload.new]
+          .filter((supplier: Suppliers) => !action.payload.remove.some(((item: Suppliers) => item.id === supplier.id)))
+      };
+
+    case GET_SUPPLIERS:
+      return {
+        ...state,
+        suppliers: action.payload,
       };
 
     case POST_STOCK:
@@ -90,7 +108,7 @@ const productsReducer = (state = initialState, action: any): ProductsState => {
             : product
         )
       }
-      
+
     default:
       return state;
   }

@@ -17,6 +17,7 @@ export interface Props {
 
 export default function ProductForm({ data, handleClose, handleSubmit }: Props) {
   const categories = useSelector((state: RootState) => state.products.categories);
+  const suppliers = useSelector((state: RootState) => state.products.suppliers);
   const [product, setProduct] = useState<Product>(initProduct());
   const [error, setError] = useState(intProductError());
 
@@ -35,6 +36,12 @@ export default function ProductForm({ data, handleClose, handleSubmit }: Props) 
   function handleSelectCategory(event: React.ChangeEvent<HTMLSelectElement>) {
     setProduct({ ...product, CategoryId: event.target.value });
     setError({ ...error, CategoryId: "" });
+  }
+
+  // Set supplier change
+  function handleSelectSupplier(event: React.ChangeEvent<HTMLSelectElement>) {
+    setProduct({ ...product, SupplierId: event.target.value });
+    setError({ ...error, SupplierId: "" });
   }
 
   // Sbubmit data
@@ -64,6 +71,11 @@ export default function ProductForm({ data, handleClose, handleSubmit }: Props) 
 
     if (product.CategoryId === "") {
       errors.CategoryId = "You must select a category";
+      value = false;
+    }
+
+    if (product.SupplierId === "") {
+      errors.SupplierId = "You must select a supplier";
       value = false;
     }
 
@@ -99,6 +111,14 @@ export default function ProductForm({ data, handleClose, handleSubmit }: Props) 
             value={product.CategoryId}
             list={categories.map((cat) => ({ id: cat.id!, label: cat.name }))}
             error={error.CategoryId}
+            handleChange={handleSelectCategory}
+          />
+          <SelectInput
+            name="SupplierId"
+            label="Supplier"
+            value={product.SupplierId}
+            list={suppliers.map((sup) => ({ id: sup.id!, label: sup.name }))}
+            error={error.SupplierId}
             handleChange={handleSelectCategory}
           />
           <button className="btn btn-success" type="submit">

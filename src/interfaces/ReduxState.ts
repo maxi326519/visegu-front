@@ -6,6 +6,7 @@ import { Categories } from "./Categories";
 import { AnyAction } from "redux";
 import { Product } from "./Product";
 import { Storage } from "./Storage";
+import { Suppliers } from "./Suppliers";
 
 export interface LoginState {
   id: string;
@@ -19,6 +20,7 @@ export interface LoginState {
 export interface ProductsState {
   data: Product[];
   categories: Categories[];
+  suppliers: Suppliers[];
 }
 
 export interface StockState {
@@ -62,6 +64,7 @@ export const initLoginState = (): LoginState => ({
 export const initProductsState = (): ProductsState => ({
   data: [],
   categories: [],
+  suppliers: [],
 });
 
 export const initStockState = (): StockState => ({

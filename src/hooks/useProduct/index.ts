@@ -10,8 +10,11 @@ import {
   deleteProduct,
   getCategories,
   updateCategories,
+  getSuppliers,
+  updateSuppliers,
 } from "../../redux/actions/products";
 import swal from "sweetalert";
+import { Suppliers } from "../../interfaces/Suppliers";
 
 export interface UseProducts {
   data: Product[];
@@ -25,6 +28,11 @@ export interface UseProducts {
     get: () => Promise<any>;
     update: (cache: Cache) => Promise<any>;
   };
+  suppliers: {
+    data: Suppliers[];
+    get: () => Promise<any>;
+    update: (cache: Cache) => Promise<any>;
+  };
 }
 
 export function useProducts(): UseProducts {
@@ -33,6 +41,9 @@ export function useProducts(): UseProducts {
   const categories = useSelector(
     (state: RootState) => state.products.categories
   );
+  const suppliers = useSelector(
+    (state: RootState) => state.products.suppliers
+  );
   const [loading, setLoading] = useState(false);
 
   async function setProduct(product: Product): Promise<any> {
@@ -40,13 +51,13 @@ export function useProducts(): UseProducts {
     try {
       await dispatch<any>(postProduct(product));
       setLoading(false);
-      swal("Creado", "Producto creado con éxito", "success");
+      swal("Created", "Successfully created product", "success");
     } catch (error) {
       console.log(error);
       setLoading(false);
       swal(
         "Error",
-        "Hubo un error al crear el producto, inténtelo más tarde",
+        "Error to create the product, try later",
         "error"
       );
     }
@@ -62,7 +73,7 @@ export function useProducts(): UseProducts {
       setLoading(false);
       swal(
         "Error",
-        "Hubo un error al obtener los productos, inténtelo más tarde",
+        "Error to get the products, inténtelo más tarde",
         "error"
       );
     }
@@ -73,13 +84,13 @@ export function useProducts(): UseProducts {
     try {
       await dispatch<any>(updateProduct(product));
       setLoading(false);
-      swal("Actualizado", "Producto actualizado con éxito", "success");
+      swal("Updated", "Successfully updated product", "success");
     } catch (error) {
       console.log(error);
       setLoading(false);
       swal(
         "Error",
-        "Hubo un error al actualizar el producto, inténtelo más tarde",
+        "Error to update the product, try later",
         "error"
       );
     }
@@ -90,13 +101,13 @@ export function useProducts(): UseProducts {
     try {
       await dispatch<any>(deleteProduct(productId));
       setLoading(false);
-      swal("Eliminado", "Producto eliminado con éxito", "success");
+      swal("Deleted", "Successfully deleted product", "success");
     } catch (error) {
       console.log(error);
       setLoading(false);
       swal(
         "Error",
-        "Hubo un error al eliminar el producto, inténtelo más tarde",
+        "Error to delete the product, try later",
         "error"
       );
     }
@@ -107,13 +118,13 @@ export function useProducts(): UseProducts {
     try {
       await dispatch<any>(updateCategories(cache));
       setLoading(false);
-      swal("Creado", "Categorias actualizadas con éxito", "success");
+      swal("Updated", "Successfully updated categories", "success");
     } catch (error) {
       console.log(error);
       setLoading(false);
       swal(
         "Error",
-        "Hubo un error al actualizar las categorias, inténtelo más tarde",
+        "Error to update the categories, try later",
         "error"
       );
     }
@@ -129,7 +140,40 @@ export function useProducts(): UseProducts {
       setLoading(false);
       swal(
         "Error",
-        "Hubo un error al actualizar las categorias, inténtelo más tarde",
+        "Error to get the categories, try later",
+        "error"
+      );
+    }
+  }
+
+  async function updateSupplierItems(cache: Cache): Promise<any> {
+    setLoading(true);
+    try {
+      await dispatch<any>(updateSuppliers(cache));
+      setLoading(false);
+      swal("Updated", "Successfully updated suppliers", "success");
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      swal(
+        "Error",
+        "Error to update the suppliers, try later",
+        "error"
+      );
+    }
+  }
+
+  async function getAllSuppliers(): Promise<any> {
+    setLoading(true);
+    try {
+      await dispatch<any>(getSuppliers());
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      swal(
+        "Error",
+        "Error to get the suppliers, try later",
         "error"
       );
     }
@@ -147,5 +191,10 @@ export function useProducts(): UseProducts {
       get: getAllCategories,
       update: updateCategoriesItems,
     },
+    suppliers: {
+      data: suppliers,
+      get: getAllSuppliers,
+      update: updateSupplierItems,
+    }
   };
 }

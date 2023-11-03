@@ -4,12 +4,14 @@ export interface Product {
   description: string;
   amount: number;
   CategoryId?: string;
+  SupplierId?: string;
 }
 
 export interface ProductError {
   skuNumber: string;
   description: string;
   CategoryId: string;
+  SupplierId: string
 }
 
 export const initProduct = (): Product => ({
@@ -22,4 +24,5 @@ export const intProductError = (): ProductError => ({
   skuNumber: "",
   description: "",
   CategoryId: "",
+  SupplierId: "",
 });
