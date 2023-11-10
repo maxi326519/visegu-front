@@ -1,6 +1,5 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../interfaces/ReduxState";
-import { useState } from "react";
 import { Product } from "../../../../../interfaces/Product";
 
 import style from "./ProductRow.module.css";
@@ -19,6 +18,7 @@ export default function ProductRow({
   handleDelete,
 }: Props) {
   const categories = useSelector((state: RootState) => state.products.categories);
+  const suppliers = useSelector((state: RootState) => state.products.suppliers);
 
   return (
     <tr className={style.row}>
@@ -26,6 +26,7 @@ export default function ProductRow({
       <span>{product.description}</span>
       <span>{product.amount}</span>
       <span>{categories.find((cat) => cat.id === product.CategoryId)?.name || "-"}</span>
+      <span>{suppliers.find((cat) => cat.id === product.SupplierId)?.name || "-"}</span>
       <button
         className="btn btn-outline-primary"
         type="button"

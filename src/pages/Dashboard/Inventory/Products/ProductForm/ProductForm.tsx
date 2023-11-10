@@ -119,7 +119,7 @@ export default function ProductForm({ data, handleClose, handleSubmit }: Props) 
             value={product.SupplierId}
             list={suppliers.map((sup) => ({ id: sup.id!, label: sup.name }))}
             error={error.SupplierId}
-            handleChange={handleSelectCategory}
+            handleChange={handleSelectSupplier}
           />
           <button className="btn btn-success" type="submit">
             Save

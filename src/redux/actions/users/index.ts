@@ -17,8 +17,8 @@ export function postUser(user: User): MyThunkAction {
         type: SET_USER,
         payload: newUser.data,
       });
-    } catch (e: any) {
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -32,9 +32,8 @@ export function getUsers(): MyThunkAction {
         type: GET_USERS,
         payload: allUser.data,
       });
-    } catch (e: any) {
-      console.log(e);
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -48,8 +47,8 @@ export function updateUser(user: User): MyThunkAction {
         type: UPDATE_USER,
         payload: user,
       });
-    } catch (e: any) {
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -63,8 +62,8 @@ export function deleteUser(id: string): MyThunkAction {
         type: DELETE_USER,
         payload: id,
       });
-    } catch (e: any) {
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }

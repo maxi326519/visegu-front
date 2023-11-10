@@ -18,8 +18,8 @@ export function postStorage(data: any): MyThunkAction {
         type: POST_STORAGE,
         payload: newStorage.data,
       });
-    } catch (e: any) {
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -34,9 +34,8 @@ export function getStorage(): MyThunkAction {
         type: GET_STORAGE,
         payload: allStorages.data,
       });
-    } catch (e: any) {
-    console.log(e);
-    throw new Error(e);
+    } catch (error: any) {
+    throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -51,8 +50,8 @@ export function updateStorage(data: any): MyThunkAction {
         type: UPDATE_STORAGE,
         payload: data,
       });
-    } catch (e: any) {
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -67,8 +66,8 @@ export function deleteStorage(id: string): MyThunkAction {
         type: DELETE_STORAGE,
         payload: id,
       });
-    } catch (e: any) {
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }

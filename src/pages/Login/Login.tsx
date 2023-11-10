@@ -1,4 +1,9 @@
-import { LoginData, LoginError, initLogin, initLoginError } from "../../interfaces/Login";
+import {
+  LoginData,
+  LoginError,
+  initLogin,
+  initLoginError,
+} from "../../interfaces/Login";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -9,6 +14,7 @@ import logo from "../../assets/img/logo.png";
 
 import Input from "../../components/Inputs/Input";
 import swal from "sweetalert";
+import { closeLoading, openLoading } from "../../redux/actions/loading";
 
 export default function Login() {
   const redirect = useNavigate();
@@ -34,12 +40,23 @@ export default function Login() {
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
+    dispatch(openLoading());
     dispatch<any>(login(user))
-      .then(() => redirect("/dashboard"))
-      .catch((error: Error) => {
-        console.log(error);
-        swal("Error", "No se pudo logear", "error")
+      .then(() => {
+        dispatch(closeLoading());
+        redirect("/dashboard/products");
       })
+      .catch((err: Error) => {
+        console.log(err.message);
+        dispatch(closeLoading());
+        if (err?.message === "User not found") {
+          setError({ ...error, email: "Usuario no encontrado" });
+        } else if (err?.message === "Incorrect password") {
+          setError({ ...error, password: "Contraseña incorrecta" });
+        } else {
+          swal("Error", "No se pudo logear", "error");
+        }
+      });
   }
 
   return (

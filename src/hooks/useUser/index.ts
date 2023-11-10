@@ -1,6 +1,6 @@
+import { closeLoading, openLoading } from "../../redux/actions/loading";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../interfaces/ReduxState";
-import { useState } from "react";
 import { User } from "../../interfaces/User";
 import {
   deleteUser,
@@ -12,28 +12,26 @@ import swal from "sweetalert";
 
 export interface UseUsers {
   data: User[];
-  loading: boolean;
   set: (user: User) => void;
   get: () => void;
   update: (user: User) => void;
   delete: (userId: string) => void;
 }
 
-export function useUsers() {
+export function useUsers(): UseUsers{
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.users);
-  const [loading, setLoading] = useState(false);
 
   async function setUser(user: User) {
-    setLoading(true);
-    await dispatch<any>(postUser(user))
+    dispatch<any>(openLoading());
+    return dispatch<any>(postUser(user))
       .then(() => {
-        setLoading(false);
+        dispatch<any>(closeLoading());
         swal("Created", "User created succesfully", "success");
       })
       .catch((error: Error) => {
         console.log(error);
-        setLoading(false);
+        dispatch<any>(closeLoading());
         swal(
           "Error",
           "Error to create the user, try later",
@@ -43,14 +41,14 @@ export function useUsers() {
   }
 
   async function getUsersData() {
-    setLoading(true);
-    await dispatch<any>(getUsers())
+    dispatch<any>(openLoading());
+    return dispatch<any>(getUsers())
       .then(() => {
-        setLoading(false);
+        dispatch<any>(closeLoading());
       })
       .catch((error: Error) => {
         console.log(error);
-        setLoading(false);
+        dispatch<any>(closeLoading());
         swal(
           "Error",
           "Error to get the storages, try later",
@@ -60,15 +58,15 @@ export function useUsers() {
   }
 
   async function updateUserData(user: User) {
-    setLoading(true);
-    await dispatch<any>(updateUser(user))
+    dispatch<any>(openLoading());
+    return dispatch<any>(updateUser(user))
       .then(() => {
-        setLoading(false);
+        dispatch<any>(closeLoading());
         swal("Updated", "User updated succesfully", "success");
       })
       .catch((error: Error) => {
         console.log(error);
-        setLoading(false);
+        dispatch<any>(closeLoading());
         swal(
           "Error",
           "Error to update the user, try later",
@@ -87,16 +85,16 @@ export function useUsers() {
       }
     })
       .then(async (response) => {
-        if (response = "Accept") {
-          setLoading(true);
-          await dispatch<any>(deleteUser(userId))
+        if (response === "Accept") {
+          dispatch<any>(openLoading());
+          return dispatch<any>(deleteUser(userId))
             .then(() => {
-              setLoading(false);
+              dispatch<any>(closeLoading());
               swal("Deleted", "User deleted succesfully", "success");
             })
             .catch((error: Error) => {
               console.log(error);
-              setLoading(false);
+              dispatch<any>(closeLoading());
               swal(
                 "Error",
                 "Hubo un error al eliminar el almacenamiento, try later",
@@ -113,6 +111,5 @@ export function useUsers() {
     get: getUsersData,
     update: updateUserData,
     delete: removeUsers,
-    loading,
   };
 }

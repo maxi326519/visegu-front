@@ -2,7 +2,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../interfaces/ReduxState";
 import { UserRol } from "../../interfaces/User";
 
-import SideDropDown from "./SideDropDown/SideDropDown";
 import SideItem from "./SideItem/SideItem";
 
 import styles from "./SideBarAccordion.module.css";
@@ -22,26 +21,22 @@ const sideList = [
     permissions: UserRol.USER,
   },
   {
-    label: "Inventory",
-    icon: stock,
+    label: "Products",
+    icon: products,
+    path: "/dashboard/products",
     permissions: UserRol.USER,
-    subList: [
-      {
-        label: "Products",
-        icon: products,
-        path: "/dashboard/inventory/products",
-      },
-      {
-        label: "Stock",
-        icon: stock,
-        path: "/dashboard/inventory/stock",
-      },
-      {
-        label: "Storages",
-        icon: storages,
-        path: "/dashboard/inventory/storages",
-      },
-    ],
+  },
+  {
+    label: "Stock",
+    icon: stock,
+    path: "/dashboard/stock",
+    permissions: UserRol.USER,
+  },
+  {
+    label: "Storages",
+    icon: storages,
+    path: "/dashboard/storages",
+    permissions: UserRol.USER,
   },
   {
     label: "Movements",
@@ -67,21 +62,9 @@ export default function SideBarAccordion() {
       </div>
       {sideList.map((item) =>
         // If user is admin
-        /*         user.rol === UserRol.ADMIN || */
-        // If permissions is any
-        item.permissions === UserRol.USER
-        && (
-          // If item has sublist
-          item.subList ? (
-            <SideDropDown
-              icon={item.icon}
-              label={item.label}
-              list={item.subList}
-            />
-          ) : (
-            <SideItem icon={item.icon} label={item.label} path={item.path} />
-          )
-        )
+        (user.rol === UserRol.ADMIN
+        || item.permissions === UserRol.USER)
+        && <SideItem icon={item.icon} label={item.label} path={item.path} />
       )}
     </div>
   );

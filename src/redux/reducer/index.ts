@@ -5,10 +5,11 @@ import productsReducer from "./ProductReducer";
 import stockReducer from "./StockReducer";
 import StorageReducer from "./StorageReducer";
 import userReducer from "./UsersReducer";
+import { loginReducer } from "./LoginReducer";
 
 const rootReducer = combineReducers({
   loading: loadingReducer,
-  login: loadingReducer,
+  login: loginReducer,
   users: userReducer,
   products: productsReducer,
   stock: stockReducer,

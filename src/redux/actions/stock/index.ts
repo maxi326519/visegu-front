@@ -23,8 +23,8 @@ export function postStock(stockData: Stock): MyThunkAction {
         type: POST_STOCK,
         payload: newStocks.data,
       });
-    } catch (e: any) {
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -39,9 +39,8 @@ export function getStock(): MyThunkAction {
         type: GET_STOCK,
         payload: allProduct.data,
       });
-    } catch (e: any) {
-      console.log(e);
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -56,8 +55,8 @@ export function updateStock(stockData: Stock): MyThunkAction {
         type: UPDATE_STOCK,
         payload: stockData,
       });
-    } catch (e: any) {
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -72,8 +71,8 @@ export function deleteStock(stockId: string): MyThunkAction {
         type: DELETE_STOCK,
         payload: stockId,
       });
-    } catch (e: any) {
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -94,8 +93,8 @@ export function setIngressStock(movement: Movement): MyThunkAction {
           Movement: response.data.Movement,
         },
       });
-    } catch (e: any) {
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -114,8 +113,8 @@ export function setEgressStock(movement: Movement): MyThunkAction {
           Movement: response.data.Movement,
         },
       });
-    } catch (e: any) {
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -142,8 +141,8 @@ export function setTransferStock(movement: Movement): MyThunkAction {
           },
         },
       });
-    } catch (e: any) {
-      throw new Error(e);
+    } catch (error: any) {
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }

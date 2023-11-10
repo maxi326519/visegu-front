@@ -53,12 +53,12 @@ export type MyThunkAction = ThunkAction<
 >;
 
 export const initLoginState = (): LoginState => ({
-  id: "ua",
-  rol: UserRol.ADMIN,
-  status: UserStatus.ACTIVE,
-  name: "Maxi",
-  email: "maxi@gmail.com",
-  token: "oljikghersigbnergmrlkjndkfawdkj",
+  id: "",
+  rol: UserRol.ANY,
+  status: UserStatus.ANY,
+  name: "",
+  email: "",
+  token: "",
 });
 
 export const initProductsState = (): ProductsState => ({

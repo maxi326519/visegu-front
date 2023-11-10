@@ -1,6 +1,6 @@
+import { closeLoading, openLoading } from "../../redux/actions/loading";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../interfaces/ReduxState";
-import { useState } from "react";
 import { Storage } from "../../interfaces/Storage";
 import {
   postStorage,
@@ -15,24 +15,23 @@ export interface UseStorage {
   set: (storage: Storage) => void;
   get: () => void;
   update: (storage: Storage) => void;
-  remove: (id: number) => void;
+  remove: (id: string) => void;
 }
 
-export function useStorage() {
+export function useStorage(): UseStorage {
   const dispatch = useDispatch();
   const storageData = useSelector((state: RootState) => state.storage);
-  const [loading, setLoading] = useState(false);
 
   async function setStorageItem(storage: Storage) {
-    setLoading(true);
-    await dispatch<any>(postStorage(storage))
+    dispatch<any>(openLoading());
+    return dispatch<any>(postStorage(storage))
       .then(() => {
-        setLoading(false);
+        dispatch<any>(closeLoading());
         swal("Created", "Storage created succesfully", "success");
       })
       .catch((error: Error) => {
         console.log(error);
-        setLoading(false);
+        dispatch<any>(closeLoading());
         swal(
           "Error",
           "Error to create the storage, try later",
@@ -42,14 +41,14 @@ export function useStorage() {
   }
 
   async function getStorageData() {
-    setLoading(true);
-    await dispatch<any>(getStorage())
+    dispatch<any>(openLoading());
+    return dispatch<any>(getStorage())
       .then(() => {
-        setLoading(false);
+        dispatch<any>(closeLoading());
       })
       .catch((error: Error) => {
         console.log(error);
-        setLoading(false);
+        dispatch<any>(closeLoading());
         swal(
           "Error",
           "Error to get the storages, try later",
@@ -59,15 +58,15 @@ export function useStorage() {
   }
 
   async function updateStorageItem(storage: Storage) {
-    setLoading(true);
-    await dispatch<any>(updateStorage(storage))
+    dispatch<any>(openLoading());
+    return dispatch<any>(updateStorage(storage))
       .then(() => {
-        setLoading(false);
+        dispatch<any>(closeLoading());
         swal("Updated", "Storage updated succesfully", "success");
       })
       .catch((error: Error) => {
         console.log(error);
-        setLoading(false);
+        dispatch<any>(closeLoading());
         swal(
           "Error",
           "Error to update the storage, try later",
@@ -87,15 +86,15 @@ export function useStorage() {
     })
       .then(async (response) => {
         if (response === "Accept") {
-          setLoading(true);
-          await dispatch<any>(deleteStorage(id))
+          dispatch<any>(openLoading());
+          return dispatch<any>(deleteStorage(id))
             .then(() => {
-              setLoading(false);
+              dispatch<any>(closeLoading());
               swal("Deleted", "Storage deleted succesfully", "success");
             })
             .catch((error: Error) => {
               console.log(error);
-              setLoading(false);
+              dispatch<any>(closeLoading());
               swal(
                 "Error",
                 "Error to delete the storage, try later",
@@ -108,7 +107,6 @@ export function useStorage() {
 
   return {
     data: storageData,
-    loading,
     set: setStorageItem,
     get: getStorageData,
     update: updateStorageItem,

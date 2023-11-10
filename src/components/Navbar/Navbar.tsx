@@ -41,12 +41,12 @@ export default function Navbar() {
             <b>Perfil</b>
           </li>
           <li>{user.name}</li>
-          <li onClick={() => redirect("/reset-email")}>
+{/*           <li onClick={() => redirect("/reset-email")}>
             <img src={emailSvg} alt="email" /> <span>Cambiar correo</span>
           </li>
           <li onClick={() => redirect("/reset-password")}>
             <img src={passSvg} alt="password" /> <span>Cambiar contraseña</span>
-          </li>
+          </li> */}
           <li onClick={handleLogout}>
             <img src={logoutSvg} alt="logout" /> <span>Cerrar sesion</span>
           </li>

@@ -29,7 +29,7 @@ export function postProduct(product: Product): MyThunkAction {
         payload: newProduct.data,
       });
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -46,7 +46,7 @@ export function getProduct(): MyThunkAction {
       });
     } catch (error: any) {
       console.log(error);
-      throw new Error(error);
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -62,7 +62,7 @@ export function updateProduct(product: Product): MyThunkAction {
         payload: product,
       });
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -78,11 +78,10 @@ export function deleteProduct(productId: string): MyThunkAction {
         payload: productId,
       });
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
-
 
 // Acción para actualizar las categorias
 export function updateCategories(cache: Cache): MyThunkAction {
@@ -110,7 +109,7 @@ export function updateCategories(cache: Cache): MyThunkAction {
         },
       });
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -126,11 +125,10 @@ export function getCategories(): MyThunkAction {
         payload: allCategories.data,
       });
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
-
 
 // Acción para actualizar los proveedores
 export function updateSuppliers(cache: Cache): MyThunkAction {
@@ -158,7 +156,7 @@ export function updateSuppliers(cache: Cache): MyThunkAction {
         },
       });
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
@@ -174,7 +172,7 @@ export function getSuppliers(): MyThunkAction {
         payload: allSuppliers.data,
       });
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(error?.response?.data.error|| error);
     }
   };
 }
