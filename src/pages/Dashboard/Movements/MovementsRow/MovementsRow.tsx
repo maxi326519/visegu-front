@@ -13,7 +13,7 @@ import dateFormat from "../../../../scripts/dateFormat";
 
 interface Props {
   movement: Movement;
-  handleDelete: (movementId: string) => void;
+  handleDelete: (movement: Movement) => void;
 }
 
 export default function MovementsRow({ movement, handleDelete }: Props) {
@@ -25,7 +25,7 @@ export default function MovementsRow({ movement, handleDelete }: Props) {
     itemName: "",
     quantity: 0,
     userName: "",
-    storageName: ""
+    storageName: "",
   });
 
   useEffect(() => {
@@ -33,14 +33,22 @@ export default function MovementsRow({ movement, handleDelete }: Props) {
       itemName: "",
       quantity: 0,
       userName: "",
-      storageName: ""
+      storageName: "",
     };
-    const currentStock = stocks.find((stock: Stock) => stock.id === movement.StockId);
+    const currentStock = stocks.find(
+      (stock: Stock) => stock.id === movement.StockId
+    );
 
-    currentData.itemName = products.find((product: Product) => product.id === currentStock?.ProductId)?.description || "";
-    currentData.quantity = currentStock?.quantity || 0
-    currentData.userName = users.find((user: User) => user.id === movement.UserId)?.name || "";
-    currentData.storageName = storages.find((storage: Storage) => storage.id === movement.StorageId)?.name || "";
+    currentData.itemName =
+      products.find(
+        (product: Product) => product.id === currentStock?.ProductId
+      )?.description || "";
+    currentData.quantity = currentStock?.quantity || 0;
+    currentData.userName =
+      users.find((user: User) => user.id === movement.UserId)?.name || "";
+    currentData.storageName =
+      storages.find((storage: Storage) => storage.id === movement.StorageId)
+        ?.name || "";
 
     setData(currentData);
   }, [movement]);
@@ -49,14 +57,14 @@ export default function MovementsRow({ movement, handleDelete }: Props) {
     <tr className={style.row}>
       <span>{movement.date ? dateFormat(movement.date) : ""}</span>
       <span>{movement.type}</span>
-      <span>{data.quantity}</span>
+      <span>{movement.quantity}</span>
       <span>{data.itemName}</span>
       <span>{data.storageName}</span>
       <span>{data.userName}</span>
       <button
         className="btn btn-outline-danger"
         type="button"
-        onClick={() => handleDelete(movement.id!)}
+        onClick={() => handleDelete(movement)}
       >
         <img src={deleteSvg} alt="delete" />
       </button>

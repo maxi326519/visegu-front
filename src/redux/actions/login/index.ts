@@ -29,6 +29,7 @@ export function login(login: LoginData): MyThunkAction {
         payload: user,
       });
     } catch (error: any) {
+      console.log(error);
       throw new Error(error?.response?.data.error|| error);
     }
   };
@@ -57,6 +58,7 @@ export function reLogin(): MyThunkAction {
         payload: response.data,
       });
     } catch (error: any) {
+      console.log(error);
       throw new Error(error?.response?.data?.error|| error);
     }
   };

@@ -24,7 +24,7 @@ export function postStock(stockData: Stock): MyThunkAction {
         payload: newStocks.data,
       });
     } catch (error: any) {
-      throw new Error(error?.response?.data.error|| error);
+      throw new Error(error?.response?.data.error || error);
     }
   };
 }
@@ -40,7 +40,7 @@ export function getStock(): MyThunkAction {
         payload: allProduct.data,
       });
     } catch (error: any) {
-      throw new Error(error?.response?.data.error|| error);
+      throw new Error(error?.response?.data.error || error);
     }
   };
 }
@@ -56,7 +56,7 @@ export function updateStock(stockData: Stock): MyThunkAction {
         payload: stockData,
       });
     } catch (error: any) {
-      throw new Error(error?.response?.data.error|| error);
+      throw new Error(error?.response?.data.error || error);
     }
   };
 }
@@ -72,7 +72,7 @@ export function deleteStock(stockId: string): MyThunkAction {
         payload: stockId,
       });
     } catch (error: any) {
-      throw new Error(error?.response?.data.error|| error);
+      throw new Error(error?.response?.data.error || error);
     }
   };
 }
@@ -81,20 +81,26 @@ export function deleteStock(stockId: string): MyThunkAction {
 export function setIngressStock(movement: Movement): MyThunkAction {
   return async (dispatch: Dispatch<AnyAction>) => {
     try {
-      console.log(movement);
-
+      // Post data
       const response = await axios.patch("/stock/ingress", movement);
+
+      // Format date
+      const Movement = {
+        ...response.data.Movement,
+        date:
+          response.data.Movement.date && new Date(response.data.Movement.date),
+      };
 
       dispatch({
         type: SET_INGRESS_STOCK,
         payload: {
           Stock: response.data.Stock,
           Product: response.data.Product,
-          Movement: response.data.Movement,
+          Movement: Movement,
         },
       });
     } catch (error: any) {
-      throw new Error(error?.response?.data.error|| error);
+      throw new Error(error?.response?.data.error || error);
     }
   };
 }
@@ -103,18 +109,26 @@ export function setIngressStock(movement: Movement): MyThunkAction {
 export function setEgressStock(movement: Movement): MyThunkAction {
   return async (dispatch: Dispatch<AnyAction>) => {
     try {
+      // Post data
       const response = await axios.patch("/stock/egress", movement);
+
+      // Format date
+      const Movement = {
+        ...response.data.Movement,
+        date:
+          response.data.Movement.date && new Date(response.data.Movement.date),
+      };
 
       dispatch({
         type: SET_EGRESS_STOCK,
         payload: {
           Stock: response.data.Stock,
           Product: response.data.Product,
-          Movement: response.data.Movement,
+          Movement: Movement,
         },
       });
     } catch (error: any) {
-      throw new Error(error?.response?.data.error|| error);
+      throw new Error(error?.response?.data.error || error);
     }
   };
 }
@@ -136,13 +150,19 @@ export function setTransferStock(movement: Movement): MyThunkAction {
             ingress: response.data.Stocks.ingress,
           },
           Movements: {
-            egress: { ...egressMovements, date: new Date(egressMovements.date) || null },
-            ingress: { ...ingressMovements, date: new Date(egressMovements.date) || null },
+            egress: {
+              ...egressMovements,
+              date: new Date(egressMovements.date) || null,
+            },
+            ingress: {
+              ...ingressMovements,
+              date: new Date(egressMovements.date) || null,
+            },
           },
         },
       });
     } catch (error: any) {
-      throw new Error(error?.response?.data.error|| error);
+      throw new Error(error?.response?.data.error || error);
     }
   };
 }

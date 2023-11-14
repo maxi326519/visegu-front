@@ -1,5 +1,7 @@
+import { Movement, MovementType } from "../../../interfaces/Movements";
 import { StockState, initStockState } from "../../../interfaces/ReduxState";
 import { Stock } from "../../../interfaces/Stock";
+import { DELETE_MOVEMENT } from "../../actions/movements";
 import {
   POST_STOCK,
   GET_STOCK,
@@ -56,15 +58,14 @@ const stockReducer = (state = initialState, action: any) => {
         data: state.data.map((stockItem: Stock) =>
           stockItem.id === action.payload.id
             ? {
-              ...stockItem,
-              quantity: stockItem.quantity - action.payload.quantity,
-            }
+                ...stockItem,
+                quantity: stockItem.quantity - action.payload.quantity,
+              }
             : stockItem
         ),
       };
 
     case SET_TRANSFER_STOCK:
-      console.log(action.payload);
       const egressStock = action.payload.Stocks.egress;
       const ingressStock = action.payload.Stocks.ingress;
 
@@ -92,6 +93,30 @@ const stockReducer = (state = initialState, action: any) => {
       return {
         ...state,
         data: stock,
+      };
+
+    case DELETE_MOVEMENT:
+      const movement: Movement = action.payload as Movement;
+
+      // Find product
+      const currentStock = state.data.find(
+        (stock) => stock.id === movement.StockId
+      );
+      if (!currentStock) throw new Error("Stock not found in redux");
+
+      // Update quantity
+      movement.type === MovementType.INGRESS
+        ? (currentStock.quantity =
+            Number(currentStock.quantity) - Number(movement.quantity))
+        : (currentStock.quantity =
+            Number(currentStock.quantity) + Number(movement.quantity));
+
+      // Update product
+      return {
+        ...state,
+        data: state.data.map((stock) =>
+          stock.id === movement.StockId ? currentStock : stock
+        ),
       };
 
     default:

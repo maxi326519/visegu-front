@@ -1,25 +1,28 @@
+import { DELETE_MOVEMENT, GET_MOVEMENT } from "../../actions/movements";
+import { SET_EGRESS_STOCK, SET_INGRESS_STOCK } from "../../actions/stock";
 import { AnyAction } from "redux";
 import {
   MovementState,
   initMovementState,
 } from "../../../interfaces/ReduxState";
-import {
-  POST_STOCK,
-  SET_EGRESS_STOCK,
-  SET_INGRESS_STOCK,
-  SET_TRANSFER_STOCK,
-} from "../../actions/stock";
-import { Movement } from "../../../interfaces/Movements";
 
 export const movementReducer = (
   state: MovementState = initMovementState(),
   action: AnyAction
 ) => {
   switch (action.type) {
-    case POST_STOCK:
+    case GET_MOVEMENT:
       return {
         ...state,
-        data: [...state.data, action.payload.Movement],
+        data: action.payload,
+      };
+
+    case DELETE_MOVEMENT:
+      return {
+        ...state,
+        data: state.data.filter(
+          (movement) => movement.id !== action.payload.id
+        ),
       };
 
     case SET_INGRESS_STOCK:
@@ -32,16 +35,6 @@ export const movementReducer = (
       return {
         ...state,
         data: [...state.data, action.payload.Movement],
-      };
-
-    case SET_TRANSFER_STOCK:
-      return {
-        ...state,
-        data: [
-          ...state.data,
-          action.payload.Movements.egress,
-          action.payload.Movements.ingress,
-        ],
       };
 
     default:

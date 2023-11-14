@@ -6,7 +6,7 @@ import SideItem from "./SideItem/SideItem";
 
 import styles from "./SideBarAccordion.module.css";
 import users from "../../assets/icons/users.svg";
-import products from "../../assets/icons/product.svg"
+import products from "../../assets/icons/product.svg";
 import stock from "../../assets/icons/stock.svg";
 import storages from "../../assets/icons/storages.svg";
 import movements from "../../assets/icons/transfer.svg";
@@ -18,13 +18,13 @@ const sideList = [
     label: "Users",
     icon: users,
     path: "/dashboard/users",
-    permissions: UserRol.USER,
+    permissions: UserRol.ADMIN,
   },
   {
     label: "Products",
     icon: products,
     path: "/dashboard/products",
-    permissions: UserRol.USER,
+    permissions: UserRol.ADMIN,
   },
   {
     label: "Stock",
@@ -36,15 +36,15 @@ const sideList = [
     label: "Storages",
     icon: storages,
     path: "/dashboard/storages",
-    permissions: UserRol.USER,
+    permissions: UserRol.ADMIN,
   },
   {
     label: "Movements",
     path: "/dashboard/movements",
     icon: movements,
-    permissions: UserRol.USER,
+    permissions: UserRol.ADMIN,
   },
-/*   {
+  /*   {
     label: "Reports",
     path: "/dashboard/Reports",
     icon: reports,
@@ -60,11 +60,12 @@ export default function SideBarAccordion() {
       <div className={styles.logo}>
         <img src={logo} alt="logo" />
       </div>
-      {sideList.map((item) =>
-        // If user is admin
-        (user.rol === UserRol.ADMIN
-        || item.permissions === UserRol.USER)
-        && <SideItem icon={item.icon} label={item.label} path={item.path} />
+      {sideList.map(
+        (item) =>
+          // If user is admin
+          (user.rol === UserRol.ADMIN || item.permissions === UserRol.USER) && (
+            <SideItem icon={item.icon} label={item.label} path={item.path} />
+          )
       )}
     </div>
   );

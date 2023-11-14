@@ -1,7 +1,14 @@
+import { useEffect, useState } from "react";
 import { useMovements } from "../../../hooks/useMovements";
-import { Movement } from "../../../interfaces/Movements";
-import { useState } from "react";
+import { useProducts } from "../../../hooks/useProduct";
+import { useStorage } from "../../../hooks/useStorage";
 import { useStock } from "../../../hooks/useStock";
+import { useUsers } from "../../../hooks/useUser";
+import {
+  Movement,
+  MovementFilters,
+  initMovementFilters,
+} from "../../../interfaces/Movements";
 
 import MovementsRow from "./MovementsRow/MovementsRow";
 import Filters from "./Filters/Filters";
@@ -17,13 +24,27 @@ import searchSvg from "../../../assets/icons/search.svg";
 
 export default function Movements() {
   const movements = useMovements();
+  const products = useProducts();
+  const storage = useStorage();
   const stock = useStock();
+  const user = useUsers();
   const [search, setSearch] = useState<string>("");
+  const [filters, setFilters] = useState<MovementFilters>(
+    initMovementFilters()
+  );
   const [form, setForm] = useState({
     ingress: false,
     egress: false,
     transfer: false,
   });
+
+  useEffect(() => {
+    if (movements.data.length <= 0) movements.get(filters);
+    if (products.data.length <= 0) products.get();
+    if (storage.data.length <= 0) storage.get();
+    if (stock.data.length <= 0) stock.get();
+    if (user.data.length <= 0) user.get();
+  }, [filters]);
 
   function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
     setSearch(event.target.name);
@@ -43,9 +64,24 @@ export default function Movements() {
 
   return (
     <div className={`toLeft ${styles.dashboard}`}>
-      {form.ingress && <IngressForm handleClose={handleIngressForm} handleSubmit={stock.setIngress} />}
-      {form.egress && <EgressForm handleClose={handleEgressForm} handleSubmit={stock.setEgress} />}
-      {form.transfer && <TransferForm handleClose={handleTransferForm} handleSubmit={stock.setTransfer} />}
+      {form.ingress && (
+        <IngressForm
+          handleClose={handleIngressForm}
+          handleSubmit={stock.setIngress}
+        />
+      )}
+      {form.egress && (
+        <EgressForm
+          handleClose={handleEgressForm}
+          handleSubmit={stock.setEgress}
+        />
+      )}
+      {form.transfer && (
+        <TransferForm
+          handleClose={handleTransferForm}
+          handleSubmit={stock.setTransfer}
+        />
+      )}
       <header>
         <div className={styles.controls}>
           <div className={styles.searchFilters}>
@@ -60,7 +96,7 @@ export default function Movements() {
                 <img src={searchSvg} alt="search" />
               </button>
             </div>
-            <Filters handleSubmit={() => { }} />
+            <Filters handleSubmit={() => {}} />
           </div>
           <div className={styles.btnContainer}>
             <button

@@ -1,9 +1,16 @@
-import { Stock, StockFilters, initStockFilters } from "../../../../interfaces/Stock";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useProducts } from "../../../../hooks/useProduct";
 import { useStorage } from "../../../../hooks/useStorage";
+import { RootState } from "../../../../interfaces/ReduxState";
 import { useStock } from "../../../../hooks/useStock";
 import { useUsers } from "../../../../hooks/useUser";
+import { UserRol } from "../../../../interfaces/User";
+import {
+  Stock,
+  StockFilters,
+  initStockFilters,
+} from "../../../../interfaces/Stock";
 
 import StockRow from "./StockRow/StockRow";
 import Filters from "./Filters/Filters";
@@ -24,6 +31,7 @@ export default function Stocks() {
   const storage = useStorage();
   const stocks = useStock();
   const users = useUsers();
+  const profile = useSelector((state: RootState) => state.login);
   const [data, setData] = useState<Stock | null>(null);
   const [rows, setRows] = useState<Stock[]>([]);
   const [filters, setFilters] = useState<StockFilters>(initStockFilters());
@@ -43,15 +51,29 @@ export default function Stocks() {
   }, []);
 
   useEffect(() => {
-    setRows(stocks.data.filter((stock) => {
-      const currentProduct = product.data.find((p) => p.id === stock.ProductId);
+    setRows(
+      stocks.data.filter((stock) => {
+        const currentProduct = product.data.find(
+          (p) => p.id === stock.ProductId
+        );
 
-      if (currentProduct?.description.toLocaleLowerCase().includes(filters.search.toLocaleLowerCase())) return true;
-      if (currentProduct?.skuNumber.toLocaleLowerCase().includes(filters.search.toLocaleLowerCase())) return true;
-      if (filters.category === currentProduct?.CategoryId) return true;
-      if (filters.storage === stock.StorageId) return true;
-      return false
-    }));
+        if (
+          currentProduct?.description
+            .toLocaleLowerCase()
+            .includes(filters.search.toLocaleLowerCase())
+        )
+          return true;
+        if (
+          currentProduct?.skuNumber
+            .toLocaleLowerCase()
+            .includes(filters.search.toLocaleLowerCase())
+        )
+          return true;
+        if (filters.category === currentProduct?.CategoryId) return true;
+        if (filters.storage === stock.StorageId) return true;
+        return false;
+      })
+    );
   }, [filters, stocks.data]);
 
   function handleEdit(data: Stock) {
@@ -92,10 +114,31 @@ export default function Stocks() {
 
   return (
     <div className={`toLeft ${styles.dashboard}`}>
-      {form.stock && <StockForm data={data} handleClose={handleForm} handleSubmit={handleSubmit} />}
-      {form.ingress && <IngressForm handleClose={handleIngressForm} handleSubmit={stocks.setIngress} />}
-      {form.egress && <EgressForm handleClose={handleEgressForm} handleSubmit={stocks.setEgress} />}
-      {form.transfer && <TransferForm handleClose={handleTransferForm} handleSubmit={stocks.setTransfer} />}
+      {form.stock && (
+        <StockForm
+          data={data}
+          handleClose={handleForm}
+          handleSubmit={handleSubmit}
+        />
+      )}
+      {form.ingress && (
+        <IngressForm
+          handleClose={handleIngressForm}
+          handleSubmit={stocks.setIngress}
+        />
+      )}
+      {form.egress && (
+        <EgressForm
+          handleClose={handleEgressForm}
+          handleSubmit={stocks.setEgress}
+        />
+      )}
+      {form.transfer && (
+        <TransferForm
+          handleClose={handleTransferForm}
+          handleSubmit={stocks.setTransfer}
+        />
+      )}
       <header>
         <div className={styles.controls}>
           <div className={styles.searchFilters}>
@@ -146,13 +189,15 @@ export default function Stocks() {
               <img src={transferSvg} alt="transfer" />
               <span>Transfer</span>
             </button>
-            <button
-              className="btn btn-outline-primary"
-              type="button"
-              onClick={handleForm}
-            >
-              + New Stock
-            </button>
+            {profile.rol === UserRol.ADMIN && (
+              <button
+                className="btn btn-outline-primary"
+                type="button"
+                onClick={handleForm}
+              >
+                + New Stock
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -171,11 +216,7 @@ export default function Stocks() {
             </tr>
           ) : (
             rows?.map((stock: Stock) => (
-              <StockRow
-                key={stock.id}
-                stock={stock}
-                handleEdit={handleEdit}
-              />
+              <StockRow key={stock.id} stock={stock} handleEdit={handleEdit} />
             ))
           )}
         </div>

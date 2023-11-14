@@ -4,6 +4,7 @@ export interface Movement {
   type: MovementType;
   quantity: number;
   UserId?: string;
+  ProductId?: string;
   StockId?: string;
   StorageId?: {
     egress: string;

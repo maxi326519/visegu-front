@@ -1,3 +1,5 @@
+import { Suppliers } from "../../../interfaces/Suppliers";
+import { Categories } from "../../../interfaces/Categories";
 import {
   POST_PRODUCT,
   GET_PRODUCT,
@@ -12,15 +14,13 @@ import {
   POST_STOCK,
   SET_EGRESS_STOCK,
   SET_INGRESS_STOCK,
-  SET_TRANSFER_STOCK
 } from "../../actions/stock";
 import {
   ProductsState,
   initProductsState,
 } from "../../../interfaces/ReduxState";
-import { Product } from "../../../interfaces/Product";
-import { Suppliers } from "../../../interfaces/Suppliers";
-import { Categories } from "../../../interfaces/Categories";
+import { DELETE_MOVEMENT } from "../../actions/movements";
+import { Movement, MovementType } from "../../../interfaces/Movements";
 
 const initialState: ProductsState = initProductsState();
 
@@ -61,15 +61,23 @@ const productsReducer = (state = initialState, action: any): ProductsState => {
     case UPDATE_CATEGORIES:
       return {
         ...state,
-        categories: [...state.categories, ...action.payload.new]
-          .filter((supplier: Categories) => !action.payload.remove.some(((item: Categories) => item.id === supplier.id)))
+        categories: [...state.categories, ...action.payload.new].filter(
+          (supplier: Categories) =>
+            !action.payload.remove.some(
+              (item: Categories) => item.id === supplier.id
+            )
+        ),
       };
 
     case UPDATE_SUPPLIERS:
       return {
         ...state,
-        suppliers: [...state.suppliers, ...action.payload.new]
-          .filter((supplier: Suppliers) => !action.payload.remove.some(((item: Suppliers) => item.id === supplier.id)))
+        suppliers: [...state.suppliers, ...action.payload.new].filter(
+          (supplier: Suppliers) =>
+            !action.payload.remove.some(
+              (item: Suppliers) => item.id === supplier.id
+            )
+        ),
       };
 
     case GET_SUPPLIERS:
@@ -79,15 +87,14 @@ const productsReducer = (state = initialState, action: any): ProductsState => {
       };
 
     case POST_STOCK:
-      console.log(action.payload);
       return {
         ...state,
         data: state.data.map((product) =>
           product.id === action.payload.Stock.ProductId
             ? { ...product, amount: Number(action.payload.Stock.quantity) }
             : product
-        )
-      }
+        ),
+      };
 
     case SET_INGRESS_STOCK:
       return {
@@ -96,8 +103,8 @@ const productsReducer = (state = initialState, action: any): ProductsState => {
           product.id === action.payload.Stock.ProductId
             ? action.payload.Product
             : product
-        )
-      }
+        ),
+      };
 
     case SET_EGRESS_STOCK:
       return {
@@ -106,8 +113,32 @@ const productsReducer = (state = initialState, action: any): ProductsState => {
           product.id === action.payload.Stock.ProductId
             ? action.payload.Product
             : product
-        )
-      }
+        ),
+      };
+
+    case DELETE_MOVEMENT:
+      const movement: Movement = action.payload as Movement;
+
+      // Find product
+      const currentProduct = state.data.find(
+        (product) => product.id === movement.ProductId
+      );
+      if (!currentProduct) throw new Error("Product not found in redux");
+
+      // Update quantity
+      movement.type === MovementType.INGRESS
+        ? (currentProduct.amount =
+            Number(currentProduct.amount) - Number(movement.quantity))
+        : (currentProduct.amount =
+            Number(currentProduct.amount) + Number(movement.quantity));
+
+      // Update product
+      return {
+        ...state,
+        data: state.data.map((product) =>
+          product.id === movement.ProductId ? currentProduct : product
+        ),
+      };
 
     default:
       return state;
