@@ -1,0 +1,17 @@
+.dropBox {
+  width: 100%;
+  height: 150px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow-y: scroll;
+}
+
+.dropItem {
+  display: flex;
+  padding: 5px 10px;
+}
+
+.dropItem input {
+  margin-right: 10px;
+}

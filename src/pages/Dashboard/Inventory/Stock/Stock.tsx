@@ -1,16 +1,19 @@
+import { closeLoading, openLoading } from "../../../../redux/actions/loading";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useProducts } from "../../../../hooks/useProduct";
 import { useStorage } from "../../../../hooks/useStorage";
 import { RootState } from "../../../../interfaces/ReduxState";
 import { useStock } from "../../../../hooks/useStock";
 import { useUsers } from "../../../../hooks/useUser";
 import { UserRol } from "../../../../interfaces/User";
+import { usePDF } from "../../../../hooks/usePDF";
 import {
   Stock,
   StockFilters,
   initStockFilters,
 } from "../../../../interfaces/Stock";
+import swal from "sweetalert";
 
 import StockRow from "./StockRow/StockRow";
 import Filters from "./Filters/Filters";
@@ -27,10 +30,12 @@ import searchSvg from "../../../../assets/icons/search.svg";
 import printSvg from "../../../../assets/icons/printer.svg";
 
 export default function Stocks() {
+  const dispatch = useDispatch();
   const product = useProducts();
   const storage = useStorage();
   const stocks = useStock();
   const users = useUsers();
+  const pdf = usePDF();
   const profile = useSelector((state: RootState) => state.login);
   const [data, setData] = useState<Stock | null>(null);
   const [rows, setRows] = useState<Stock[]>([]);
@@ -56,6 +61,15 @@ export default function Stocks() {
         const currentProduct = product.data.find(
           (p) => p.id === stock.ProductId
         );
+
+        if (
+          currentProduct &&
+          filters.category !== "" &&
+          currentProduct?.CategoryId !== filters.category
+        )
+          return false;
+        if (filters.storage !== "" && stock.StorageId !== filters.storage)
+          return false;
 
         if (
           currentProduct?.description
@@ -112,6 +126,36 @@ export default function Stocks() {
     data ? stocks.update(stock) : stocks.set(stock);
   }
 
+  // Print stock list
+  async function handlePrint() {
+    if (rows.length >= 1) {
+      swal({
+        text: `Are you sure you want to dowload the list of ${rows.length} product?`,
+        icon: "info",
+        buttons: {
+          Yes: true,
+          No: true,
+        },
+      }).then((response) => {
+        if (response === "Yes") {
+          dispatch(openLoading());
+          pdf
+            .openStockPDF(
+              rows,
+              storage.data,
+              product.data,
+              product.categories.data
+            )
+            .then(() => dispatch(closeLoading()))
+            .catch((error: Error) => {
+              dispatch(closeLoading());
+              swal("Error", "The pdf could not be generated", "error");
+            });
+        }
+      });
+    } else swal("", "You don't have products to download", "warning");
+  }
+
   return (
     <div className={`toLeft ${styles.dashboard}`}>
       {form.stock && (
@@ -160,7 +204,11 @@ export default function Stocks() {
               storages={storage.data}
               categories={product.categories.data}
             />
-            <button className="btn btn-outline-primary" type="button">
+            <button
+              className="btn btn-outline-primary"
+              type="button"
+              onClick={handlePrint}
+            >
               <img src={printSvg} alt="print" />
             </button>
           </div>

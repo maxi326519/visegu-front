@@ -1,4 +1,9 @@
-import { Stock, StockError, initStock, initStockError } from "../../../../../interfaces/Stock";
+import {
+  Stock,
+  StockError,
+  initStock,
+  initStockError,
+} from "../../../../../interfaces/Stock";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../interfaces/ReduxState";
@@ -6,6 +11,7 @@ import { RootState } from "../../../../../interfaces/ReduxState";
 import styles from "./StockForm.module.css";
 import Input from "../../../../../components/Inputs/Input";
 import SelectInput from "../../../../../components/Inputs/SelectInput";
+import DataSelector from "../../../../../components/DataSelector/DataSelector";
 
 export interface Props {
   data: Stock | null;
@@ -25,8 +31,15 @@ export default function StockForm({ data, handleClose, handleSubmit }: Props) {
   }, [data]);
 
   // Change stock
-  function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+  function handleChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) {
     setStock({ ...stock, [event.target.name]: event.target.value });
+  }
+
+  // Toggle product selection
+  function handleSelectProduct(productId: string) {
+    setStock({ ...stock, ProductId: productId });
   }
 
   // Sbubmit data
@@ -68,7 +81,13 @@ export default function StockForm({ data, handleClose, handleSubmit }: Props) {
       <div className={styles.container}>
         <header className={styles.header}>
           <h3 className={styles.headerTitle}>New stock</h3>
-          <button className={styles.headerClose} type="button" onClick={handleClose}>X</button>
+          <button
+            className={styles.headerClose}
+            type="button"
+            onClick={handleClose}
+          >
+            X
+          </button>
         </header>
         <form className={styles.form} onSubmit={handleLocalSubmit}>
           <Input
@@ -79,20 +98,25 @@ export default function StockForm({ data, handleClose, handleSubmit }: Props) {
             handleChange={handleChange}
           />
           <SelectInput
-            name="ProductId"
-            label="Product"
-            list={products.map((product) => ({ id: product.id!, label: product.skuNumber }))}
-            value={stock.ProductId}
-            error={error.ProductId}
-            handleChange={handleChange}
-          />
-          <SelectInput
             name="StorageId"
             label="Storage"
-            list={storages.map((storage) => ({ id: storage.id!, label: storage.name }))}
+            list={storages.map((storage) => ({
+              id: storage.id!,
+              label: storage.name,
+            }))}
             value={stock.StorageId}
             error={error.StorageId}
             handleChange={handleChange}
+          />
+          <DataSelector
+            data={products.map((item) => ({
+              id: item.id!,
+              label: `${item.skuNumber} - ${item.description}`,
+            }))}
+            selected={[stock.ProductId]}
+            placeHolder="Select a product"
+            onSelect={handleSelectProduct}
+            onRemove={() => handleSelectProduct("")}
           />
           <button className="btn btn-success" type="submit">
             Save
@@ -100,5 +124,5 @@ export default function StockForm({ data, handleClose, handleSubmit }: Props) {
         </form>
       </div>
     </div>
-  )
+  );
 }

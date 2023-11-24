@@ -28,8 +28,8 @@ function App() {
   const loading = useSelector((state: RootState) => state.loading);
   const user = useSelector((state: RootState) => state.login);
 
-/*   axios.defaults.baseURL = "https://api.visegu.com"; */
-   axios.defaults.baseURL = "http://localhost:3001";
+  axios.defaults.baseURL = "https://api.visegu.com";
+/*    axios.defaults.baseURL = "http://localhost:3001"; */
 
   useEffect(() => {
     redirect("/login");

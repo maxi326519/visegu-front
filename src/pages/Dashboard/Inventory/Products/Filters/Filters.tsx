@@ -1,7 +1,10 @@
-import { StockFilters, initStockFilters } from "../../../../../interfaces/Stock";
 import { useEffect, useState } from "react";
 import { Categories } from "../../../../../interfaces/Categories";
-import { Storage } from "../../../../../interfaces/Storage";
+import { Suppliers } from "../../../../../interfaces/Suppliers";
+import {
+  ProductFilters,
+  initProductFilters,
+} from "../../../../../interfaces/Product";
 
 import SelectInput from "../../../../../components/Inputs/SelectInput";
 
@@ -9,24 +12,24 @@ import style from "./Filter.module.css";
 import filterSvg from "../../../../../assets/icons/filter.svg";
 
 interface Props {
-  handleSubmit: (filters: StockFilters) => void;
-  filters: StockFilters;
-  storages: Storage[];
+  handleSubmit: (filters: ProductFilters) => void;
+  filters: ProductFilters;
   categories: Categories[];
+  suppliers: Suppliers[];
 }
 
 export default function Filters({
   handleSubmit,
   filters,
-  storages,
-  categories
+  categories,
+  suppliers,
 }: Props) {
   const [open, setOpen] = useState<boolean>(false);
-  const [filter, setFilter] = useState<StockFilters>(initStockFilters());
+  const [filter, setFilter] = useState<ProductFilters>(initProductFilters());
 
   useEffect(() => {
     setFilter(filters);
-  }, [filters]);
+  }, [filters]); 
 
   // Filter change
   function handleChangeFilter(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -46,30 +49,37 @@ export default function Filters({
 
   return (
     <div className={style.filter}>
-      <button className={`btn btn-outline-primary ${style.btnFilter}`} type="button" onClick={handleFilter}>
+      <button
+        className={`btn btn-outline-primary ${style.btnFilter}`}
+        type="button"
+        onClick={handleFilter}
+      >
         <span>Filters</span>
         <img src={filterSvg} alt="filtros" />
       </button>
       {open ? (
         <form className={style.filterContainer} onSubmit={handleLocalSubmit}>
           <SelectInput
-            name="storage"
-            label="Storage"
-            list={storages.map((storage) => ({ id: storage.id!, label: storage.name }))}
-            value={filter.storage}
+            name="supplier"
+            label="Supplier"
+            list={suppliers.map((supplier) => ({
+              id: supplier.id!,
+              label: supplier.name,
+            }))}
+            value={filter.supplier}
             handleChange={handleChangeFilter}
           />
           <SelectInput
             name="category"
             label="Category"
-            list={categories.map((category) => ({ id: category.id!, label: category.name }))}
+            list={categories.map((category) => ({
+              id: category.id!,
+              label: category.name,
+            }))}
             value={filter.category}
             handleChange={handleChangeFilter}
           />
-          <button
-            className="btn btn-success"
-            type="submit"
-          >
+          <button className="btn btn-success" type="submit">
             Aplicar
           </button>
         </form>

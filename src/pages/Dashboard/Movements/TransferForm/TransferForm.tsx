@@ -1,4 +1,9 @@
-import { Movement, MovementError, initMovement, initMovementError } from "../../../../interfaces/Movements";
+import {
+  Movement,
+  MovementError,
+  initMovement,
+  initMovementError,
+} from "../../../../interfaces/Movements";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../interfaces/ReduxState";
 import { useState } from "react";
@@ -8,6 +13,7 @@ import Input from "../../../../components/Inputs/Input";
 import SelectInput from "../../../../components/Inputs/SelectInput";
 
 import styles from "./TransferForm.module.css";
+import DataSelector from "../../../../components/DataSelector/DataSelector";
 
 export interface Props {
   handleClose: () => void;
@@ -16,7 +22,7 @@ export interface Props {
 
 export default function TransferForm({ handleClose, handleSubmit }: Props) {
   const stock = useSelector((state: RootState) => state.stock.data);
-  const product = useSelector((state: RootState) => state.products.data);
+  const products = useSelector((state: RootState) => state.products.data);
   const storage = useSelector((state: RootState) => state.storage);
   const users = useSelector((state: RootState) => state.users);
   const user = useSelector((state: RootState) => state.login);
@@ -24,14 +30,16 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
   const [error, setError] = useState<MovementError>(initMovementError());
 
   // Movement Change
-  function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+  function handleChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) {
     if (event.target.name === "egress") {
       setMovement({
         ...movement,
         StorageId: {
           egress: event.target.value,
           ingress: movement.StorageId!.ingress,
-        }
+        },
       });
     } else if (event.target.name === "ingress") {
       setMovement({
@@ -39,7 +47,7 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
         StorageId: {
           egress: movement.StorageId!.egress,
           ingress: event.target.value,
-        }
+        },
       });
     } else {
       setMovement({ ...movement, [event.target.name]: event.target.value });
@@ -49,7 +57,10 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
   // Movement date change
   function handleChangeDate(event: React.ChangeEvent<HTMLInputElement>) {
     if (new Date(event.target.value).getTime()) {
-      setMovement({ ...movement, [event.target.name]: new Date(event.target.value) });
+      setMovement({
+        ...movement,
+        [event.target.name]: new Date(event.target.value),
+      });
     }
   }
 
@@ -61,6 +72,17 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
       handleSubmit(movement);
       handleClose();
     }
+  }
+
+  // Toggle stock selection
+  function handleSelectStock(stockId: string) {
+    setMovement({ ...movement, StockId: stockId });
+  }
+
+  // Return "skuNumber - description" of product
+  function handleGetProductData(productId: string) {
+    const product = products.find((product) => product.id === productId);
+    return product ? `${product.skuNumber} - ${product.description}` : "";
   }
 
   // Errors validations
@@ -107,7 +129,13 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
       <div className={styles.container}>
         <header className={styles.header}>
           <h3 className={styles.headerTitle}>Transfer</h3>
-          <button className={styles.headerClose} type="button" onClick={handleClose}>X</button>
+          <button
+            className={styles.headerClose}
+            type="button"
+            onClick={handleClose}
+          >
+            X
+          </button>
         </header>
         <form className={styles.form} onSubmit={handleLocalSubmit}>
           <SelectInput
@@ -130,20 +158,12 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
             name="egress"
             label="Storage egress"
             value={movement.StorageId?.egress}
-            list={storage.map((storage) => ({ id: storage.id!, label: storage.name }))}
+            list={storage.map((storage) => ({
+              id: storage.id!,
+              label: storage.name,
+            }))}
             error={error.StorageId.egress}
             handleChange={handleChange}
-          />
-          <SelectInput
-            name="StockId"
-            label="Stock"
-            value={movement.StockId}
-            list={stock
-              .filter((stock) => stock.StorageId === movement.StorageId?.egress) // Filter only stocks of the storage selected
-              .map((stock) => ({ id: stock.id!, label: product.find((product) => product.id === stock.ProductId)?.description! }))}
-            error={error.StockId}
-            handleChange={handleChange}
-            disabled={movement.UserId && movement.StorageId?.egress ? false : true}
           />
           <SelectInput
             name="ingress"
@@ -154,7 +174,9 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
               .map((storage) => ({ id: storage.id!, label: storage.name }))}
             error={error.StorageId.ingress}
             handleChange={handleChange}
-            disabled={movement.UserId && movement.StorageId?.egress ? false : true}
+            disabled={
+              movement.UserId && movement.StorageId?.egress ? false : true
+            }
           />
           <Input
             name="quantity"
@@ -163,11 +185,23 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
             error={error.quantity}
             handleChange={handleChange}
           />
+          <DataSelector
+            data={stock
+              .filter((stock) => stock.StorageId === movement.StorageId?.egress) // Filter only stocks of the storage selected
+              .map((stock) => ({
+                id: stock.id!,
+                label: handleGetProductData(stock.ProductId),
+              }))}
+            selected={[movement.StockId!]}
+            placeHolder="Select a product in stock"
+            onSelect={handleSelectStock}
+            onRemove={() => handleSelectStock("")}
+          />
           <button className="btn btn-success" type="submit">
             Save
           </button>
         </form>
       </div>
     </div>
-  )
+  );
 }

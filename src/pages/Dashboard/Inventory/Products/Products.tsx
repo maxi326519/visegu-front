@@ -1,24 +1,37 @@
+import { closeLoading, openLoading } from "../../../../redux/actions/loading";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useProducts } from "../../../../hooks/useProduct";
-import { Product } from "../../../../interfaces/Product";
 import { Cache } from "../../../../interfaces/Categories";
+import { usePDF } from "../../../../hooks/usePDF";
+import {
+  Product,
+  ProductFilters,
+  initProductFilters,
+} from "../../../../interfaces/Product";
 
 import ProductRow from "./ProductRow/ProductRow";
 import ProductForm from "./ProductForm/ProductForm";
 import Categories from "./Categories/Categories";
 import Suppliers from "./Suppliers/Suppliers";
+import Filters from "./Filters/Filters";
 
 import styles from "./Products.module.css";
 import searchSvg from "../../../../assets/icons/search.svg";
 import categoriesSvg from "../../../../assets/icons/categories.svg";
 import supplierSvg from "../../../../assets/icons/supplier.svg";
+import printSvg from "../../../../assets/icons/printer.svg";
+import swal from "sweetalert";
 
 export default function Products() {
+  const dispatch = useDispatch();
   const products = useProducts();
+  const pdf = usePDF();
   const [form, setForm] = useState<boolean>(false);
   const [data, setData] = useState<Product | null>(null);
   const [rows, setRows] = useState<Product[]>([]);
   const [search, setSearch] = useState<string>("");
+  const [filters, setFilters] = useState<ProductFilters>(initProductFilters());
   const [categories, setCategories] = useState<boolean>(false);
   const [suppliers, setSuppliers] = useState<boolean>(false);
 
@@ -29,15 +42,38 @@ export default function Products() {
     if (products.suppliers.data.length <= 0) products.suppliers.get();
   }, []);
 
-  // Filters products rows 
+  // Filters products rows
   useEffect(() => {
-    setRows(products.data.filter((product) => {
-      if (search === "") return true
-      if (product.description.toLocaleLowerCase().includes(search.toLocaleLowerCase())) return true
-      if (product.skuNumber.toLocaleLowerCase().includes(search.toLocaleLowerCase())) return true
-      return false
-    }));
-  }, [search, products.data]);
+    dispatch(openLoading());
+    setRows(
+      products.data.filter((product) => {
+        if (filters.category !== "" && product.CategoryId !== filters.category)
+          return false;
+        if (filters.supplier !== "" && product.SupplierId !== filters.supplier)
+          return false;
+
+        if (search === "") return true;
+        if (
+          product.description
+            .toLocaleLowerCase()
+            .includes(search.toLocaleLowerCase())
+        )
+          return true;
+        if (
+          product.skuNumber
+            .toLocaleLowerCase()
+            .includes(search.toLocaleLowerCase())
+        )
+          return true;
+        return false;
+      })
+    );
+    dispatch(closeLoading());
+  }, [search, filters, products.data]);
+
+  useEffect(() => {
+    console.log(rows.length);
+  }, [rows]);
 
   // Change search bar
   function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
@@ -68,7 +104,7 @@ export default function Products() {
 
   // Submit for the form
   function handleSubmit(product: Product) {
-    data ? products.update(product) : products.set(product)
+    data ? products.update(product) : products.set(product);
   }
 
   // Update categories list
@@ -81,17 +117,64 @@ export default function Products() {
     products.suppliers.update(cache);
   }
 
+  // Print stock list
+  async function handlePrint() {
+    if (rows.length >= 1) {
+      swal({
+        text: `Are you sure you want to dowload the list of ${rows.length} product?`,
+        icon: "info",
+        buttons: {
+          Yes: true,
+          No: true,
+        },
+      }).then(async (response) => {
+        if (response === "Yes") {
+          await dispatch<any>(openLoading());
+          await pdf
+            .openProductPDF(
+              rows,
+              products.categories.data,
+              products.suppliers.data
+            )
+            .then(() => dispatch(closeLoading()))
+            .catch((error: Error) => {
+              dispatch(closeLoading());
+              swal("Error", "The pdf could not be generated", "error");
+            });
+        }
+      });
+    } else swal("", "You don't have products to download", "warning");
+  }
+
   return (
     <div className={`toLeft ${styles.dashboard}`}>
-      {form && <ProductForm data={data} handleClose={handleForm} handleSubmit={handleSubmit} />}
-      {categories && <Categories data={products.categories.data} handleSubmit={handleUpdateCategories} handleClose={handleCategories} />}
-      {suppliers && <Suppliers data={products.suppliers.data} handleSubmit={handleUpdateSuppliers} handleClose={handleSuppliers} />}
+      {form && (
+        <ProductForm
+          data={data}
+          handleClose={handleForm}
+          handleSubmit={handleSubmit}
+        />
+      )}
+      {categories && (
+        <Categories
+          data={products.categories.data}
+          handleSubmit={handleUpdateCategories}
+          handleClose={handleCategories}
+        />
+      )}
+      {suppliers && (
+        <Suppliers
+          data={products.suppliers.data}
+          handleSubmit={handleUpdateSuppliers}
+          handleClose={handleSuppliers}
+        />
+      )}
       <div className={styles.controls}>
         <div className={styles.searchFilters}>
           <div className={styles.searchBar}>
             <input
               className="form-control"
-              placeholder="Search stock"
+              placeholder="Search product"
               value={search}
               onChange={handleSearch}
             />
@@ -99,6 +182,19 @@ export default function Products() {
               <img src={searchSvg} alt="search" />
             </button>
           </div>
+          <Filters
+            handleSubmit={setFilters}
+            filters={filters}
+            categories={products.categories.data}
+            suppliers={products.suppliers.data}
+          />
+          <button
+            className="btn btn-outline-primary"
+            type="button"
+            onClick={handlePrint}
+          >
+            <img src={printSvg} alt="print" />
+          </button>
         </div>
         <div className={styles.btnContainer}>
           <button

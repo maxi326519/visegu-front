@@ -11,7 +11,12 @@ export interface ProductError {
   skuNumber: string;
   description: string;
   CategoryId: string;
-  SupplierId: string
+  SupplierId: string;
+}
+
+export interface ProductFilters {
+  category: string;
+  supplier: string;
 }
 
 export const initProduct = (): Product => ({
@@ -25,4 +30,9 @@ export const intProductError = (): ProductError => ({
   description: "",
   CategoryId: "",
   SupplierId: "",
+});
+
+export const initProductFilters = (): ProductFilters => ({
+  category: "",
+  supplier: "",
 });
