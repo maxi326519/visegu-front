@@ -3,9 +3,10 @@ import { MyThunkAction } from "../../../interfaces/ReduxState";
 import { LoginData } from "../../../interfaces/Login";
 import axios from "axios";
 
-export const LOGIN = "LOGIN";
-export const PERSISTENCE = "PERSISTENCE";
 export const TOKEN = "TOKEN";
+export const LOGIN = "LOGIN";
+export const LOG_OUT = "LOG_OUT";
+export const PERSISTENCE = "PERSISTENCE";
 
 export function login(login: LoginData): MyThunkAction {
   return async (dispatch: Dispatch<AnyAction>) => {
@@ -30,7 +31,23 @@ export function login(login: LoginData): MyThunkAction {
       });
     } catch (error: any) {
       console.log(error);
-      throw new Error(error?.response?.data.error|| error);
+      throw new Error(error?.response?.data.error || error);
+    }
+  };
+}
+
+export function logOut(): MyThunkAction {
+  return async (dispatch: Dispatch<AnyAction>) => {
+    try {
+      // Delete tocket to local storage
+      localStorage.clear();
+
+      dispatch({
+        type: LOG_OUT,
+      });
+    } catch (error: any) {
+      console.log(error);
+      throw new Error(error?.response?.data.error || error);
     }
   };
 }
@@ -59,7 +76,7 @@ export function reLogin(): MyThunkAction {
       });
     } catch (error: any) {
       console.log(error);
-      throw new Error(error?.response?.data?.error|| error);
+      throw new Error(error?.response?.data?.error || error);
     }
   };
 }

@@ -229,6 +229,8 @@ export default function Products() {
           <span>Quantity</span>
           <span>Category</span>
           <span>Supplier</span>
+          <span>Buy Price</span>
+          <span>Sale Price</span>
           <span>Actions</span>
         </div>
         <div className={styles.body}>

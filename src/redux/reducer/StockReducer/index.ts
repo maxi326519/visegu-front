@@ -1,14 +1,15 @@
-import { Movement, MovementType } from "../../../interfaces/Movements";
 import { StockState, initStockState } from "../../../interfaces/ReduxState";
-import { Stock } from "../../../interfaces/Stock";
+import { Movement, MovementType } from "../../../interfaces/Movements";
 import { DELETE_MOVEMENT } from "../../actions/movements";
+import { LOG_OUT } from "../../actions/login";
+import { Stock } from "../../../interfaces/Stock";
 import {
-  POST_STOCK,
   GET_STOCK,
+  POST_STOCK,
   UPDATE_STOCK,
   DELETE_STOCK,
-  SET_INGRESS_STOCK,
   SET_EGRESS_STOCK,
+  SET_INGRESS_STOCK,
   SET_TRANSFER_STOCK,
 } from "../../actions/stock";
 
@@ -118,6 +119,9 @@ const stockReducer = (state = initialState, action: any) => {
           stock.id === movement.StockId ? currentStock : stock
         ),
       };
+
+    case LOG_OUT:
+      return initStockState();
 
     default:
       return state;

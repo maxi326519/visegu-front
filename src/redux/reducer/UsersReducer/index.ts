@@ -1,5 +1,6 @@
 import { UserState, initUserState } from "../../../interfaces/ReduxState";
 import { AnyAction } from "redux";
+import { LOG_OUT } from "../../actions/login";
 import {
   SET_USER,
   GET_USERS,
@@ -24,6 +25,9 @@ const userReducer = (state = initialState, action: AnyAction) => {
 
     case DELETE_USER:
       return state.filter((user) => user.id !== action.payload);
+
+    case LOG_OUT:
+      return initUserState();
 
     default:
       return state;

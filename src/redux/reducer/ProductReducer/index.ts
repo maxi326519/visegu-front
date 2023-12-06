@@ -1,14 +1,17 @@
-import { Suppliers } from "../../../interfaces/Suppliers";
+import { Movement, MovementType } from "../../../interfaces/Movements";
+import { DELETE_MOVEMENT } from "../../actions/movements";
 import { Categories } from "../../../interfaces/Categories";
+import { Suppliers } from "../../../interfaces/Suppliers";
+import { LOG_OUT } from "../../actions/login";
 import {
-  POST_PRODUCT,
   GET_PRODUCT,
+  POST_PRODUCT,
+  GET_SUPPLIERS,
   UPDATE_PRODUCT,
   DELETE_PRODUCT,
   GET_CATEGORIES,
-  UPDATE_CATEGORIES,
-  GET_SUPPLIERS,
   UPDATE_SUPPLIERS,
+  UPDATE_CATEGORIES,
 } from "../../actions/products";
 import {
   POST_STOCK,
@@ -19,8 +22,6 @@ import {
   ProductsState,
   initProductsState,
 } from "../../../interfaces/ReduxState";
-import { DELETE_MOVEMENT } from "../../actions/movements";
-import { Movement, MovementType } from "../../../interfaces/Movements";
 
 const initialState: ProductsState = initProductsState();
 
@@ -139,6 +140,9 @@ const productsReducer = (state = initialState, action: any): ProductsState => {
           product.id === movement.ProductId ? currentProduct : product
         ),
       };
+
+    case LOG_OUT:
+      return initProductsState();
 
     default:
       return state;

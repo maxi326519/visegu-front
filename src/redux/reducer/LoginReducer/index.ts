@@ -1,6 +1,6 @@
+import { LOGIN, LOG_OUT, PERSISTENCE } from "../../actions/login";
 import { LoginState, initLoginState } from "../../../interfaces/ReduxState";
 import { AnyAction } from "redux";
-import { LOGIN, PERSISTENCE } from "../../actions/login";
 
 export const loginReducer = (
   state: LoginState = initLoginState(),
@@ -12,6 +12,9 @@ export const loginReducer = (
 
     case PERSISTENCE:
       return action.payload;
+
+    case LOG_OUT:
+      return initLoginState();
 
     default:
       return state;

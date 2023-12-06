@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { Product, ProductError, initProduct, intProductError } from "../../../../../interfaces/Product";
+import {
+  Product,
+  ProductError,
+  initProduct,
+  intProductError,
+} from "../../../../../interfaces/Product";
 
 import Input from "../../../../../components/Inputs/Input";
 
@@ -15,8 +20,14 @@ export interface Props {
   handleSubmit: (product: Product) => void;
 }
 
-export default function ProductForm({ data, handleClose, handleSubmit }: Props) {
-  const categories = useSelector((state: RootState) => state.products.categories);
+export default function ProductForm({
+  data,
+  handleClose,
+  handleSubmit,
+}: Props) {
+  const categories = useSelector(
+    (state: RootState) => state.products.categories
+  );
   const suppliers = useSelector((state: RootState) => state.products.suppliers);
   const [product, setProduct] = useState<Product>(initProduct());
   const [error, setError] = useState(intProductError());
@@ -88,7 +99,13 @@ export default function ProductForm({ data, handleClose, handleSubmit }: Props) 
       <div className={styles.container}>
         <header className={styles.header}>
           <h3 className={styles.headerTitle}>New product</h3>
-          <button className={styles.headerClose} type="button" onClick={handleClose}>X</button>
+          <button
+            className={styles.headerClose}
+            type="button"
+            onClick={handleClose}
+          >
+            X
+          </button>
         </header>
         <form className={styles.form} onSubmit={handleLocalSubmit}>
           <Input
@@ -103,6 +120,20 @@ export default function ProductForm({ data, handleClose, handleSubmit }: Props) 
             label="Description"
             value={product.description}
             error={error.description}
+            handleChange={handleChange}
+          />
+          <Input
+            name="priceBuy"
+            label="Buy Price"
+            value={product.priceBuy}
+            error={error.priceBuy}
+            handleChange={handleChange}
+          />
+          <Input
+            name="priceSale"
+            label="Sale Price"
+            value={product.priceSale}
+            error={error.priceSale}
             handleChange={handleChange}
           />
           <SelectInput
@@ -127,5 +158,5 @@ export default function ProductForm({ data, handleClose, handleSubmit }: Props) 
         </form>
       </div>
     </div>
-  )
+  );
 }

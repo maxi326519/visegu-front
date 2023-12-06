@@ -1,6 +1,7 @@
-import { DELETE_MOVEMENT, GET_MOVEMENT } from "../../actions/movements";
 import { SET_EGRESS_STOCK, SET_INGRESS_STOCK } from "../../actions/stock";
+import { DELETE_MOVEMENT, GET_MOVEMENT } from "../../actions/movements";
 import { AnyAction } from "redux";
+import { LOG_OUT } from "../../actions/login";
 import {
   MovementState,
   initMovementState,
@@ -36,6 +37,9 @@ export const movementReducer = (
         ...state,
         data: [...state.data, action.payload.Movement],
       };
+
+    case LOG_OUT:
+      return initMovementState();
 
     default:
       return state;

@@ -84,7 +84,7 @@
 
 .firstRow {
   display: grid;
-  grid-template-columns: 200px 1fr 200px 200px 200px 50px 50px;
+  grid-template-columns: 200px 1fr 200px 200px 200px 100px 100px 50px 50px;
   gap: 10px;
   padding: 10px;
   outline: 1px solid var(--border-color);

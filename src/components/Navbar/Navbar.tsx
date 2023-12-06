@@ -1,14 +1,12 @@
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { RootState } from "../../interfaces/ReduxState";
+import { logOut } from "../../redux/actions/login";
 import swal from "sweetalert";
 
-import userSvg from "../../assets/icons/user.svg";
-import emailSvg from "../../assets/icons/email.svg";
-import passSvg from "../../assets/icons/password.svg";
-import logoutSvg from "../../assets/icons/logout.svg";
-
 import styles from "./Navbar.module.css";
+import userSvg from "../../assets/icons/user.svg";
+import logoutSvg from "../../assets/icons/logout.svg";
 
 export default function Navbar() {
   const user = useSelector((state: RootState) => state.login);
@@ -25,8 +23,8 @@ export default function Navbar() {
       },
     }).then((response) => {
       redirect("/login");
-      /*       if (response === "Si")
-              dispatch<any>(logOut()).then(() => redirect("/login")); */
+      if (response === "Si")
+        dispatch<any>(logOut()).then(() => redirect("/login"));
     });
   }
 
@@ -41,12 +39,6 @@ export default function Navbar() {
             <b>Perfil</b>
           </li>
           <li>{user.name}</li>
-{/*           <li onClick={() => redirect("/reset-email")}>
-            <img src={emailSvg} alt="email" /> <span>Cambiar correo</span>
-          </li>
-          <li onClick={() => redirect("/reset-password")}>
-            <img src={passSvg} alt="password" /> <span>Cambiar contraseña</span>
-          </li> */}
           <li onClick={handleLogout}>
             <img src={logoutSvg} alt="logout" /> <span>Cerrar sesion</span>
           </li>

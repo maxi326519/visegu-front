@@ -1,9 +1,10 @@
 import { initStorageState } from "../../../interfaces/ReduxState";
 import { AnyAction } from "redux";
 import { Storage } from "../../../interfaces/Storage";
+import { LOG_OUT } from "../../actions/login";
 import {
-  POST_STORAGE,
   GET_STORAGE,
+  POST_STORAGE,
   UPDATE_STORAGE,
   DELETE_STORAGE,
 } from "../../actions/storage";
@@ -27,6 +28,9 @@ const StorageReducer = (state = initialState, action: AnyAction): Storage[] => {
 
     case DELETE_STORAGE:
       return state.filter((item) => item.id !== action.payload);
+
+    case LOG_OUT:
+      return initStorageState();
 
     default:
       return state;
