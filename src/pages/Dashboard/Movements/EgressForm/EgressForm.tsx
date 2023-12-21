@@ -1,19 +1,19 @@
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../interfaces/ReduxState";
+import { useState } from "react";
 import {
   Movement,
   MovementError,
   initMovement,
   initMovementError,
 } from "../../../../interfaces/Movements";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../interfaces/ReduxState";
-import { useState } from "react";
 import fetDateYYYYMMDD from "../../../../scripts/fetDateYYYYMMDD";
 
 import Input from "../../../../components/Inputs/Input";
 import SelectInput from "../../../../components/Inputs/SelectInput";
+import DataSelector from "../../../../components/DataSelector/DataSelector";
 
 import styles from "./EgressForm.module.css";
-import DataSelector from "../../../../components/DataSelector/DataSelector";
 
 export interface Props {
   handleClose: () => void;
@@ -36,7 +36,7 @@ export default function EgressForm({ handleClose, handleSubmit }: Props) {
     if (event.target.name === "egress") {
       setMovement({
         ...movement,
-        StorageId: {
+        Storage: {
           egress: event.target.value,
           ingress: "",
         },
@@ -68,7 +68,13 @@ export default function EgressForm({ handleClose, handleSubmit }: Props) {
 
   // Toggle stock selection
   function handleSelectStock(stockId: string) {
-    setMovement({ ...movement, StockId: stockId });
+    setMovement({
+      ...movement,
+      Storage: {
+        egress: stockId,
+        ingress: "",
+      },
+    });
   }
 
   // Return "skuNumber - description" of product
@@ -95,13 +101,13 @@ export default function EgressForm({ handleClose, handleSubmit }: Props) {
     }
 
     // STOCK
-    if (movement.StockId === "") {
+    if (movement.Stocks.egress === "") {
       errors.StockId = "You must select a stock";
       value = false;
     }
 
     // STORAGE
-    if (movement.StorageId?.egress === "") {
+    if (movement.Storage?.egress === "") {
       errors.StorageId.egress = "You must select a storage";
       value = false;
     }
@@ -143,7 +149,7 @@ export default function EgressForm({ handleClose, handleSubmit }: Props) {
           <SelectInput
             name="egress"
             label="Storage"
-            value={movement.StorageId?.egress}
+            value={movement.Storage?.egress}
             list={storage.map((storage) => ({
               id: storage.id!,
               label: storage.name,
@@ -160,14 +166,12 @@ export default function EgressForm({ handleClose, handleSubmit }: Props) {
           />
           <DataSelector
             data={stock
-              .filter(
-                (stock) => stock.StorageId === movement.StorageId?.egress
-              ) // Filter only stocks of the storage selected
+              .filter((stock) => stock.StorageId === movement.Storage?.egress) // Filter only stocks of the storage selected
               .map((stock) => ({
                 id: stock.id!,
                 label: handleGetProductData(stock.ProductId),
               }))}
-            selected={[movement.StockId!]}
+            selected={[movement.Stocks.egress!]}
             placeHolder="Select a product in stock"
             onSelect={handleSelectStock}
             onRemove={() => handleSelectStock("")}

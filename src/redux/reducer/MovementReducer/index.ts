@@ -1,4 +1,4 @@
-import { SET_EGRESS_STOCK, SET_INGRESS_STOCK } from "../../actions/stock";
+import { SET_EGRESS_STOCK, SET_INGRESS_STOCK, SET_TRANSFER_STOCK } from "../../actions/stock";
 import { DELETE_MOVEMENT, GET_MOVEMENT } from "../../actions/movements";
 import { AnyAction } from "redux";
 import { LOG_OUT } from "../../actions/login";
@@ -33,6 +33,12 @@ export const movementReducer = (
       };
 
     case SET_EGRESS_STOCK:
+      return {
+        ...state,
+        data: [...state.data, action.payload.Movement],
+      };
+
+    case SET_TRANSFER_STOCK:
       return {
         ...state,
         data: [...state.data, action.payload.Movement],

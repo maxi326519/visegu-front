@@ -1,7 +1,7 @@
 import { Dispatch, AnyAction } from "redux";
 import { MyThunkAction } from "../../../interfaces/ReduxState";
-import axios from "axios";
 import { Movement } from "../../../interfaces/Movements";
+import axios from "axios";
 
 // Action constants
 export const POST_MOVEMENT = "POST_MOVEMENT";

@@ -13,6 +13,10 @@ export const SET_INGRESS_STOCK = "SET_INGRESS_STOCK";
 export const SET_EGRESS_STOCK = "SET_EGRESS_STOCK";
 export const SET_TRANSFER_STOCK = "SET_TRANSFER_STOCK";
 
+export const DELETE_INGRESS_MOVEMENT = "DELETE_INGRESS_MOVEMENT";
+export const DELETE_EGRESS_MOVEMENT = "DELETE_EGRESS_MOVEMENT";
+export const DELETE_TRANSFER_MOVEMENT = "DELETE_TRANSFER_MOVEMENT";
+
 // Acción to add a stock
 export function postStock(stockData: Stock): MyThunkAction {
   return async (dispatch: Dispatch<AnyAction>) => {
@@ -139,8 +143,7 @@ export function setTransferStock(movement: Movement): MyThunkAction {
     try {
       const response = await axios.patch("/stock/transfer", movement);
 
-      const egressMovements = response.data.Movements.egress;
-      const ingressMovements = response.data.Movements.ingress;
+      const transferMovements = response.data.Movements.egress;
 
       dispatch({
         type: SET_TRANSFER_STOCK,
@@ -149,15 +152,9 @@ export function setTransferStock(movement: Movement): MyThunkAction {
             egress: response.data.Stocks.egress,
             ingress: response.data.Stocks.ingress,
           },
-          Movements: {
-            egress: {
-              ...egressMovements,
-              date: new Date(egressMovements.date) || null,
-            },
-            ingress: {
-              ...ingressMovements,
-              date: new Date(egressMovements.date) || null,
-            },
+          Movement: {
+            ...transferMovements,
+            date: new Date(transferMovements.date) || null,
           },
         },
       });

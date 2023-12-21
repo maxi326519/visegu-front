@@ -1,4 +1,5 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { closeLoading, openLoading } from "./redux/actions/loading";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./interfaces/ReduxState";
 import { useEffect } from "react";
@@ -19,16 +20,15 @@ import Reports from "./pages/Dashboard/Reports/Reports";
 
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { closeLoading, openLoading } from "./redux/actions/loading";
 import Loading from "./components/Loading/Loading";
 
 function App() {
   const dispatch = useDispatch();
-  const redirect = useNavigate();
   const loading = useSelector((state: RootState) => state.loading);
+  const redirect = useNavigate();
   const user = useSelector((state: RootState) => state.login);
 
-  /*   axios.defaults.baseURL = "https://api.visegu.com"; */
+  /* axios.defaults.baseURL = "https://api.visegu.com"; */
   axios.defaults.baseURL = "http://localhost:3001";
 
   useEffect(() => {

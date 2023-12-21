@@ -1,12 +1,15 @@
 export interface Movement {
   id?: string;
-  date: Date | null;
+  date: Date;
   type: MovementType;
   quantity: number;
-  UserId?: string;
   ProductId?: string;
-  StockId?: string;
-  StorageId?: {
+  UserId?: string;
+  Stocks: {
+    egress: string;
+    ingress: string;
+  };
+  Storage: {
     egress: string;
     ingress: string;
   };
@@ -15,6 +18,7 @@ export interface Movement {
 export enum MovementType {
   EGRESS = "Egress",
   INGRESS = "Ingress",
+  TRANFER = "Transfer",
 }
 
 export interface MovementFilters {
@@ -52,8 +56,11 @@ export const initMovement = (UserId: string): Movement => ({
   type: MovementType.INGRESS,
   quantity: 0,
   UserId,
-  StockId: "",
-  StorageId: {
+  Stocks: {
+    egress: "",
+    ingress: "",
+  },
+  Storage: {
     egress: "",
     ingress: "",
   },

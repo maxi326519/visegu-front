@@ -1,19 +1,19 @@
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../interfaces/ReduxState";
+import { useState } from "react";
 import {
   Movement,
   MovementError,
   initMovement,
   initMovementError,
 } from "../../../../interfaces/Movements";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../interfaces/ReduxState";
-import { useState } from "react";
 import fetDateYYYYMMDD from "../../../../scripts/fetDateYYYYMMDD";
 
 import Input from "../../../../components/Inputs/Input";
 import SelectInput from "../../../../components/Inputs/SelectInput";
+import DataSelector from "../../../../components/DataSelector/DataSelector";
 
 import styles from "./TransferForm.module.css";
-import DataSelector from "../../../../components/DataSelector/DataSelector";
 
 export interface Props {
   handleClose: () => void;
@@ -36,16 +36,16 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
     if (event.target.name === "egress") {
       setMovement({
         ...movement,
-        StorageId: {
+        Storage: {
           egress: event.target.value,
-          ingress: movement.StorageId!.ingress,
+          ingress: movement.Storage.ingress,
         },
       });
     } else if (event.target.name === "ingress") {
       setMovement({
         ...movement,
-        StorageId: {
-          egress: movement.StorageId!.egress,
+        Storage: {
+          egress: movement.Storage.egress,
           ingress: event.target.value,
         },
       });
@@ -76,7 +76,7 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
 
   // Toggle stock selection
   function handleSelectStock(stockId: string) {
-    setMovement({ ...movement, StockId: stockId });
+    setMovement({ ...movement, Stocks: { ingress: "", egress: stockId } });
   }
 
   // Return "skuNumber - description" of product
@@ -103,19 +103,19 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
     }
 
     // STOCK
-    if (movement.StockId === "") {
+    if (movement.Stocks.egress === "") {
       errors.StockId = "You must select a stock";
       value = false;
     }
 
     // STORAGE EGRESS
-    if (movement.StorageId?.egress === "") {
+    if (movement.Storage.egress === "") {
       errors.StorageId.egress = "You must select a storage";
       value = false;
     }
 
     // STORAGE INGRESS
-    if (movement.StorageId?.ingress === "") {
+    if (movement.Storage.ingress === "") {
       errors.StorageId.ingress = "You must select a storage";
       value = false;
     }
@@ -157,7 +157,7 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
           <SelectInput
             name="egress"
             label="Storage egress"
-            value={movement.StorageId?.egress}
+            value={movement.Storage.egress}
             list={storage.map((storage) => ({
               id: storage.id!,
               label: storage.name,
@@ -168,15 +168,13 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
           <SelectInput
             name="ingress"
             label="Storage ingress"
-            value={movement.StorageId?.ingress}
+            value={movement.Storage.ingress}
             list={storage
-              .filter((stg) => stg.id !== movement.StorageId?.egress) // Filter only storages other than the one selected as egress
+              .filter((stg) => stg.id !== movement.Storage.egress) // Filter only storages other than the one selected as egress
               .map((storage) => ({ id: storage.id!, label: storage.name }))}
             error={error.StorageId.ingress}
             handleChange={handleChange}
-            disabled={
-              movement.UserId && movement.StorageId?.egress ? false : true
-            }
+            disabled={movement.UserId && movement.Storage.egress ? false : true}
           />
           <Input
             name="quantity"
@@ -187,12 +185,12 @@ export default function TransferForm({ handleClose, handleSubmit }: Props) {
           />
           <DataSelector
             data={stock
-              .filter((stock) => stock.StorageId === movement.StorageId?.egress) // Filter only stocks of the storage selected
+              .filter((stock) => stock.StorageId === movement.Storage.egress) // Filter only stocks of the storage selected
               .map((stock) => ({
                 id: stock.id!,
                 label: handleGetProductData(stock.ProductId),
               }))}
-            selected={[movement.StockId!]}
+            selected={[movement.Stocks.egress]}
             placeHolder="Select a product in stock"
             onSelect={handleSelectStock}
             onRemove={() => handleSelectStock("")}

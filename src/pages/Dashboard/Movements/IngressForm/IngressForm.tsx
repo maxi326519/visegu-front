@@ -1,19 +1,19 @@
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../interfaces/ReduxState";
+import { useState } from "react";
 import {
   Movement,
   MovementError,
   initMovement,
   initMovementError,
 } from "../../../../interfaces/Movements";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../interfaces/ReduxState";
-import { useState } from "react";
 import fetDateYYYYMMDD from "../../../../scripts/fetDateYYYYMMDD";
 
 import Input from "../../../../components/Inputs/Input";
 import SelectInput from "../../../../components/Inputs/SelectInput";
+import DataSelector from "../../../../components/DataSelector/DataSelector";
 
 import styles from "./IngressForm.module.css";
-import DataSelector from "../../../../components/DataSelector/DataSelector";
 
 export interface Props {
   handleClose: () => void;
@@ -36,7 +36,7 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
     if (event.target.name === "ingress") {
       setMovement({
         ...movement,
-        StorageId: {
+        Storage: {
           egress: "",
           ingress: event.target.value,
         },
@@ -68,7 +68,13 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
 
   // Toggle stock selection
   function handleSelectStock(stockId: string) {
-    setMovement({ ...movement, StockId: stockId });
+    setMovement({
+      ...movement,
+      Storage: {
+        egress: "",
+        ingress: stockId,
+      },
+    });
   }
 
   // Return "skuNumber - description" of product
@@ -95,13 +101,13 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
     }
 
     // STOCK
-    if (movement.StockId === "") {
+    if (movement.Stocks.ingress === "") {
       errors.StockId = "You must select a stock";
       value = false;
     }
 
     // STORAGE
-    if (movement.StorageId?.ingress === "") {
+    if (movement.Storage.ingress === "") {
       errors.StorageId.egress = "You must select a storage";
       value = false;
     }
@@ -143,7 +149,7 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
           <SelectInput
             name="ingress"
             label="Storage"
-            value={movement.StorageId?.ingress}
+            value={movement.Storage.ingress}
             list={storage.map((storage) => ({
               id: storage.id!,
               label: storage.name,
@@ -161,13 +167,13 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
           <DataSelector
             data={stock
               .filter(
-                (stock) => stock.StorageId === movement.StorageId?.ingress
+                (stock) => stock.StorageId === movement.Storage.ingress
               ) // Filter only stocks of the storage selected
               .map((stock) => ({
                 id: stock.id!,
                 label: handleGetProductData(stock.ProductId),
               }))}
-            selected={[movement.StockId!]}
+            selected={[movement.Stocks.ingress]}
             placeHolder="Select a product in stock"
             onSelect={handleSelectStock}
             onRemove={() => handleSelectStock("")}

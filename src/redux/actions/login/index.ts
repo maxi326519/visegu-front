@@ -70,6 +70,8 @@ export function reLogin(): MyThunkAction {
       // Login with token
       const response = await axios.post("/login/token");
 
+      console.log(response.data);
+
       dispatch({
         type: PERSISTENCE,
         payload: response.data,

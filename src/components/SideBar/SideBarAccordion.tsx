@@ -44,12 +44,12 @@ const sideList = [
     icon: movements,
     permissions: UserRol.ADMIN,
   },
-  /*   {
+  {
     label: "Reports",
     path: "/dashboard/Reports",
     icon: reports,
     permissions: UserRol.USER,
-  }, */
+  },
 ];
 
 export default function SideBarAccordion() {

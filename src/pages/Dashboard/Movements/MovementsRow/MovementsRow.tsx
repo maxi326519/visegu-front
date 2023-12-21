@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../interfaces/ReduxState";
-import { Movement } from "../../../../interfaces/Movements";
+import { Movement, MovementType } from "../../../../interfaces/Movements";
 import { Storage } from "../../../../interfaces/Storage";
 import { Product } from "../../../../interfaces/Product";
 import { Stock } from "../../../../interfaces/Stock";
@@ -36,19 +36,47 @@ export default function MovementsRow({ movement, handleDelete }: Props) {
       storageName: "",
     };
     const currentStock = stocks.find(
-      (stock: Stock) => stock.id === movement.StockId
+      (stock: Stock) => stock.id === movement.Stocks.egress
     );
 
+    // Item Name
     currentData.itemName =
       products.find(
         (product: Product) => product.id === currentStock?.ProductId
       )?.description || "";
+
+    // Quantity
     currentData.quantity = currentStock?.quantity || 0;
+
+    // User Name
     currentData.userName =
       users.find((user: User) => user.id === movement.UserId)?.name || "";
-    currentData.storageName =
-      storages.find((storage: Storage) => storage.id === movement.StorageId)
-        ?.name || "";
+
+    // Storage Name
+    if (movement.type === MovementType.EGRESS) {
+      currentData.storageName =
+        storages.find(
+          (storage: Storage) => storage.id === movement.Storage.egress
+        )?.name || "";
+    } else if (movement.type === MovementType.INGRESS) {
+      currentData.storageName =
+        storages.find(
+          (storage: Storage) => storage.id === movement.Storage.ingress
+        )?.name || "";
+    } else {
+      const ingressStorage = storages.find(
+        (storage: Storage) => storage.id === movement.Storage.ingress
+      );
+
+      const egressStorage = storages.find(
+        (storage: Storage) => storage.id === movement.Storage.egress
+      );
+
+      currentData.storageName =
+        ingressStorage && egressStorage
+          ? `${ingressStorage} -> ${egressStorage}`
+          : "";
+    }
 
     setData(currentData);
   }, [movement]);
