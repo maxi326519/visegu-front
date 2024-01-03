@@ -21,7 +21,6 @@ export interface Props {
 }
 
 export default function IngressForm({ handleClose, handleSubmit }: Props) {
-  const stock = useSelector((state: RootState) => state.stock.data);
   const products = useSelector((state: RootState) => state.products.data);
   const storage = useSelector((state: RootState) => state.storage);
   const users = useSelector((state: RootState) => state.users);
@@ -59,7 +58,6 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
   // Submit data
   function handleLocalSubmit(event: React.FormEvent) {
     event.preventDefault();
-
     if (validations()) {
       handleSubmit(movement);
       handleClose();
@@ -67,13 +65,10 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
   }
 
   // Toggle stock selection
-  function handleSelectStock(stockId: string) {
+  function handleSelectProduct(productId: string) {
     setMovement({
       ...movement,
-      Stocks: {
-        egress: "",
-        ingress: stockId,
-      },
+      ProductId: productId
     });
   }
 
@@ -101,8 +96,8 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
     }
 
     // STOCK
-    if (movement.Stocks.ingress === "") {
-      errors.StockId = "You must select a stock";
+    if (movement.ProductId === "") {
+      errors.StockId = "You must select a product";
       value = false;
     }
 
@@ -165,18 +160,14 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
             handleChange={handleChange}
           />
           <DataSelector
-            data={stock
-              .filter(
-                (stock) => stock.StorageId === movement.Storage.ingress
-              ) // Filter only stocks of the storage selected
-              .map((stock) => ({
-                id: stock.id!,
-                label: handleGetProductData(stock.ProductId),
-              }))}
-            selected={[movement.Stocks.ingress]}
-            placeHolder="Select a product in stock"
-            onSelect={handleSelectStock}
-            onRemove={() => handleSelectStock("")}
+            data={products.map((product) => ({
+              id: product.id!,
+              label: handleGetProductData(product.id!),
+            }))}
+            selected={[movement.ProductId || ""]}
+            placeHolder="Select a product"
+            onSelect={handleSelectProduct}
+            onRemove={() => handleSelectProduct("")}
           />
           <button className="btn btn-success" type="submit">
             Save

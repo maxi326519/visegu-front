@@ -158,13 +158,6 @@ export default function Stocks() {
 
   return (
     <div className={`toLeft ${styles.dashboard}`}>
-      {form.stock && (
-        <StockForm
-          data={data}
-          handleClose={handleForm}
-          handleSubmit={handleSubmit}
-        />
-      )}
       {form.ingress && (
         <IngressForm
           handleClose={handleIngressForm}
@@ -237,15 +230,6 @@ export default function Stocks() {
               <img src={transferSvg} alt="transfer" />
               <span>Transfer</span>
             </button>
-            {profile.rol === UserRol.ADMIN && (
-              <button
-                className="btn btn-outline-primary"
-                type="button"
-                onClick={handleForm}
-              >
-                + New Stock
-              </button>
-            )}
           </div>
         </div>
       </header>
