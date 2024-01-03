@@ -1,16 +1,14 @@
-import { Stock } from "../../../../../interfaces/Stock";
-
-import style from "./StockRow.module.css";
-import deleteSvg from "../../../../../assets/icons/remove.svg";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../interfaces/ReduxState";
 import { Product } from "../../../../../interfaces/Product";
-import { useEffect, useState } from "react";
 import { Storage } from "../../../../../interfaces/Storage";
+import { Stock } from "../../../../../interfaces/Stock";
+
+import style from "./StockRow.module.css";
 
 interface Props {
   stock: Stock;
-  handleEdit: (stock: Stock) => void;
 }
 
 export default function StockRow({

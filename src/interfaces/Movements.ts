@@ -22,6 +22,7 @@ export enum MovementType {
 }
 
 export interface MovementFilters {
+  search: string;
   type: string;
   user: string;
   storage: string;
@@ -69,6 +70,7 @@ export const initMovement = (UserId: string): Movement => ({
 });
 
 export const initMovementFilters = (): MovementFilters => ({
+  search: "",
   type: "",
   user: "",
   storage: "",

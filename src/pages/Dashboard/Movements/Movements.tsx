@@ -63,7 +63,7 @@ export default function Movements() {
   }
 
   return (
-    <div className={`toLeft ${styles.dashboard}`}>
+    <div className={styles.dashboard}>
       {form.ingress && (
         <IngressForm
           handleClose={handleIngressForm}

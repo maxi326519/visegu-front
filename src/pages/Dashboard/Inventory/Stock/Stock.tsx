@@ -1,12 +1,10 @@
 import { closeLoading, openLoading } from "../../../../redux/actions/loading";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useProducts } from "../../../../hooks/useProduct";
 import { useStorage } from "../../../../hooks/useStorage";
-import { RootState } from "../../../../interfaces/ReduxState";
 import { useStock } from "../../../../hooks/useStock";
 import { useUsers } from "../../../../hooks/useUser";
-import { UserRol } from "../../../../interfaces/User";
 import { usePDF } from "../../../../hooks/usePDF";
 import {
   Stock,
@@ -17,7 +15,6 @@ import swal from "sweetalert";
 
 import StockRow from "./StockRow/StockRow";
 import Filters from "./Filters/Filters";
-import StockForm from "./StockForm/StockForm";
 import IngressForm from "../../Movements/IngressForm/IngressForm";
 import EgressForm from "../../Movements/EgressForm/EgressForm";
 import TransferForm from "../../Movements/TransferForm/TransferForm";
@@ -36,8 +33,6 @@ export default function Stocks() {
   const stocks = useStock();
   const users = useUsers();
   const pdf = usePDF();
-  const profile = useSelector((state: RootState) => state.login);
-  const [data, setData] = useState<Stock | null>(null);
   const [rows, setRows] = useState<Stock[]>([]);
   const [filters, setFilters] = useState<StockFilters>(initStockFilters());
   const [form, setForm] = useState({
@@ -90,20 +85,9 @@ export default function Stocks() {
     );
   }, [filters, stocks.data]);
 
-  function handleEdit(data: Stock) {
-    setData(data);
-    handleForm();
-  }
-
   // Filter change
   function handleChangeFilter(event: React.ChangeEvent<HTMLInputElement>) {
     setFilters({ ...filters, [event.target.name]: event.target.value });
-  }
-
-  // Show new stock form
-  function handleForm() {
-    setForm({ ...form, stock: !form.stock });
-    if (!form.stock) setData(null);
   }
 
   // Show ingress stock form
@@ -119,11 +103,6 @@ export default function Stocks() {
   // Show transfer stock form
   function handleTransferForm() {
     setForm({ ...form, transfer: !form.transfer });
-  }
-
-  // Post new sotck or patch some sotck
-  function handleSubmit(stock: Stock) {
-    data ? stocks.update(stock) : stocks.set(stock);
   }
 
   // Print stock list
@@ -248,7 +227,7 @@ export default function Stocks() {
             </tr>
           ) : (
             rows?.map((stock: Stock) => (
-              <StockRow key={stock.id} stock={stock} handleEdit={handleEdit} />
+              <StockRow key={stock.id} stock={stock} />
             ))
           )}
         </div>
