@@ -70,7 +70,7 @@ export default function EgressForm({ handleClose, handleSubmit }: Props) {
   function handleSelectStock(stockId: string) {
     setMovement({
       ...movement,
-      Storage: {
+      Stocks: {
         egress: stockId,
         ingress: "",
       },

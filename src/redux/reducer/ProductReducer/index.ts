@@ -1,7 +1,6 @@
-import { Movement, MovementType } from "../../../interfaces/Movements";
-import { DELETE_MOVEMENT } from "../../actions/movements";
 import { Categories } from "../../../interfaces/Categories";
 import { Suppliers } from "../../../interfaces/Suppliers";
+import { Movement } from "../../../interfaces/Movements";
 import { LOG_OUT } from "../../actions/login";
 import {
   GET_PRODUCT,
@@ -17,6 +16,8 @@ import {
   POST_STOCK,
   SET_EGRESS_STOCK,
   SET_INGRESS_STOCK,
+  DELETE_EGRESS_MOVEMENT,
+  DELETE_INGRESS_MOVEMENT,
 } from "../../actions/stock";
 import {
   ProductsState,
@@ -117,27 +118,47 @@ const productsReducer = (state = initialState, action: any): ProductsState => {
         ),
       };
 
-    case DELETE_MOVEMENT:
-      const movement: Movement = action.payload as Movement;
+    case DELETE_INGRESS_MOVEMENT:
+      console.log("ingress movement");
+      const ingressMovement: Movement = action.payload as Movement;
 
       // Find product
-      const currentProduct = state.data.find(
-        (product) => product.id === movement.ProductId
+      const currentIngressProduct = state.data.find(
+        (product) => product.id === ingressMovement.ProductId
       );
-      if (!currentProduct) throw new Error("Product not found in redux");
+      if (!currentIngressProduct) throw new Error("Product not found in redux");
 
       // Update quantity
-      movement.type === MovementType.INGRESS
-        ? (currentProduct.amount =
-            Number(currentProduct.amount) - Number(movement.quantity))
-        : (currentProduct.amount =
-            Number(currentProduct.amount) + Number(movement.quantity));
+      currentIngressProduct.amount -= Number(ingressMovement.quantity);
+      console.log("Return");
 
       // Update product
       return {
         ...state,
         data: state.data.map((product) =>
-          product.id === movement.ProductId ? currentProduct : product
+          product.id === ingressMovement.ProductId
+            ? currentIngressProduct
+            : product
+        ),
+      };
+
+    case DELETE_EGRESS_MOVEMENT:
+      const egressMovement: Movement = action.payload as Movement;
+
+      // Find product
+      const currentProduct = state.data.find(
+        (product) => product.id === egressMovement.ProductId
+      );
+      if (!currentProduct) throw new Error("Product not found in redux");
+
+      // Update quantity
+      currentProduct.amount -= egressMovement.quantity;
+
+      // Update product
+      return {
+        ...state,
+        data: state.data.map((product) =>
+          product.id === egressMovement.ProductId ? currentProduct : product
         ),
       };
 

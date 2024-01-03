@@ -1,6 +1,5 @@
 import { StockState, initStockState } from "../../../interfaces/ReduxState";
-import { Movement, MovementType } from "../../../interfaces/Movements";
-import { DELETE_MOVEMENT } from "../../actions/movements";
+import { Movement } from "../../../interfaces/Movements";
 import { LOG_OUT } from "../../actions/login";
 import { Stock } from "../../../interfaces/Stock";
 import {
@@ -116,7 +115,9 @@ const stockReducer = (state = initialState, action: any) => {
       return {
         ...state,
         data: state.data.map((stock) =>
-          stock.id === egressMovement.Stocks.ingress ? currentIngressStock : stock
+          stock.id === egressMovement.Stocks.ingress
+            ? currentIngressStock
+            : stock
         ),
       };
 
@@ -141,40 +142,46 @@ const stockReducer = (state = initialState, action: any) => {
         ),
       };
 
-      case DELETE_TRANSFER_MOVEMENT:
-        const transferMovement: Movement = action.payload as Movement;
-  
-        // Find ingress product
-        const transferIngressStock = state.data.find(
-          (stock) => stock.id === transferMovement.Stocks.ingress
-        );
-        if (!transferIngressStock) throw new Error("Stock not found in redux");
-    
-        // Find egress product
-        const transferEgressStock = state.data.find(
-          (stock) => stock.id === transferMovement.Stocks.egress
-        );
-        if (!transferEgressStock) throw new Error("Stock not found in redux");
+    case DELETE_TRANSFER_MOVEMENT:
+      const transferMovement: Movement = action.payload as Movement;
 
-        // Update ingress quantity
-        transferIngressStock.quantity =
-          Number(transferIngressStock.quantity) + Number(transferMovement.quantity);
-  
-        // Update egress quantity
-        transferEgressStock.quantity =
-        Number(transferEgressStock.quantity) + Number(transferMovement.quantity);
+      // Find ingress product
+      const transferIngressStock = state.data.find(
+        (stock) => stock.id === transferMovement.Stocks.ingress
+      );
+      if (!transferIngressStock) throw new Error("Stock not found in redux");
 
-        // Update product
-        return {
-          ...state,
-          data: state.data
+      // Find egress product
+      const transferEgressStock = state.data.find(
+        (stock) => stock.id === transferMovement.Stocks.egress
+      );
+      if (!transferEgressStock) throw new Error("Stock not found in redux");
+
+      // Update ingress quantity
+      transferIngressStock.quantity =
+        Number(transferIngressStock.quantity) -
+        Number(transferMovement.quantity);
+
+      // Update egress quantity
+      transferEgressStock.quantity =
+        Number(transferEgressStock.quantity) +
+        Number(transferMovement.quantity);
+
+      // Update product
+      return {
+        ...state,
+        data: state.data
           .map((stock) =>
-            stock.id === transferMovement.Stocks.ingress ? transferIngressStock : stock
+            stock.id === transferMovement.Stocks.ingress
+              ? transferIngressStock
+              : stock
           )
           .map((stock) =>
-          stock.id === transferMovement.Stocks.egress ? transferEgressStock : stock
-        ),
-        };
+            stock.id === transferMovement.Stocks.egress
+              ? transferEgressStock
+              : stock
+          ),
+      };
 
     case LOG_OUT:
       return initStockState();

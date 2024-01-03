@@ -93,6 +93,14 @@ export function setIngressStock(movement: Movement): MyThunkAction {
         ...response.data.Movement,
         date:
           response.data.Movement.date && new Date(response.data.Movement.date),
+        Stocks: {
+          egress: response.data.Movement.StockEgressId,
+          ingress: response.data.Movement.StockIngressId,
+        },
+        Storage: {
+          egress: response.data.Movement.StorageEgressId,
+          ingress: response.data.Movement.StorageIngressId,
+        },
       };
 
       dispatch({
@@ -121,6 +129,14 @@ export function setEgressStock(movement: Movement): MyThunkAction {
         ...response.data.Movement,
         date:
           response.data.Movement.date && new Date(response.data.Movement.date),
+        Stocks: {
+          egress: response.data.Movement.StockEgressId,
+          ingress: response.data.Movement.StockIngressId,
+        },
+        Storage: {
+          egress: response.data.Movement.StorageEgressId,
+          ingress: response.data.Movement.StorageIngressId,
+        },
       };
 
       dispatch({
@@ -143,7 +159,7 @@ export function setTransferStock(movement: Movement): MyThunkAction {
     try {
       const response = await axios.patch("/stock/transfer", movement);
 
-      const transferMovements = response.data.Movements.egress;
+      const transferMovements = response.data.Movement;
 
       dispatch({
         type: SET_TRANSFER_STOCK,
@@ -155,6 +171,14 @@ export function setTransferStock(movement: Movement): MyThunkAction {
           Movement: {
             ...transferMovements,
             date: new Date(transferMovements.date) || null,
+            Stocks: {
+              egress: transferMovements.StockEgressId,
+              ingress: transferMovements.StockIngressId,
+            },
+            Storage: {
+              egress: transferMovements.StorageEgressId,
+              ingress: transferMovements.StorageIngressId,
+            },
           },
         },
       });

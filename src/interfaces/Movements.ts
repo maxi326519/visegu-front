@@ -25,6 +25,8 @@ export interface MovementFilters {
   type: string;
   user: string;
   storage: string;
+  supplier: string;
+  product: string;
 }
 
 export interface MovementError {
@@ -70,4 +72,6 @@ export const initMovementFilters = (): MovementFilters => ({
   type: "",
   user: "",
   storage: "",
+  supplier: "",
+  product: "",
 });

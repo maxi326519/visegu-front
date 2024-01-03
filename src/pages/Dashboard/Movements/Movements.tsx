@@ -96,7 +96,12 @@ export default function Movements() {
                 <img src={searchSvg} alt="search" />
               </button>
             </div>
-            <Filters handleSubmit={() => {}} />
+            <Filters
+              handleSubmit={setFilters}
+              filters={filters}
+              products={products.data}
+              suppliers={products.suppliers.data}
+            />
           </div>
           <div className={styles.btnContainer}>
             <button
@@ -142,13 +147,15 @@ export default function Movements() {
               <th>No Movements</th>
             </tr>
           ) : (
-            movements.data?.map((movement: Movement) => (
-              <MovementsRow
-                key={movement.id}
-                movement={movement}
-                handleDelete={movements.delete}
-              />
-            ))
+            movements.data
+              ?.sort((a, b) => b.date.getTime() - a.date.getTime())
+              .map((movement: Movement) => (
+                <MovementsRow
+                  key={movement.id}
+                  movement={movement}
+                  handleDelete={movements.delete}
+                />
+              ))
           )}
         </div>
       </div>

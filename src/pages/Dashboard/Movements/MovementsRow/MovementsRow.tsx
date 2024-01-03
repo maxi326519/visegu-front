@@ -36,7 +36,9 @@ export default function MovementsRow({ movement, handleDelete }: Props) {
       storageName: "",
     };
     const currentStock = stocks.find(
-      (stock: Stock) => stock.id === movement.Stocks.egress
+      (stock: Stock) =>
+        stock.id === movement.Stocks.egress ||
+        stock.id === movement.Stocks.ingress
     );
 
     // Item Name
@@ -59,6 +61,8 @@ export default function MovementsRow({ movement, handleDelete }: Props) {
           (storage: Storage) => storage.id === movement.Storage.egress
         )?.name || "";
     } else if (movement.type === MovementType.INGRESS) {
+      console.log(movement.Storage, storages);
+
       currentData.storageName =
         storages.find(
           (storage: Storage) => storage.id === movement.Storage.ingress
@@ -74,7 +78,7 @@ export default function MovementsRow({ movement, handleDelete }: Props) {
 
       currentData.storageName =
         ingressStorage && egressStorage
-          ? `${ingressStorage} -> ${egressStorage}`
+          ? `${ingressStorage.name} -> ${egressStorage.name}`
           : "";
     }
 

@@ -1,17 +1,18 @@
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../interfaces/ReduxState";
 import {
   Stock,
   StockError,
   initStock,
   initStockError,
 } from "../../../../../interfaces/Stock";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../interfaces/ReduxState";
 
-import styles from "./StockForm.module.css";
 import Input from "../../../../../components/Inputs/Input";
 import SelectInput from "../../../../../components/Inputs/SelectInput";
 import DataSelector from "../../../../../components/DataSelector/DataSelector";
+
+import styles from "./StockForm.module.css";
 
 export interface Props {
   data: Stock | null;

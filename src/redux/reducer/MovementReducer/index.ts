@@ -1,7 +1,14 @@
-import { SET_EGRESS_STOCK, SET_INGRESS_STOCK, SET_TRANSFER_STOCK } from "../../actions/stock";
-import { DELETE_MOVEMENT, GET_MOVEMENT } from "../../actions/movements";
+import { GET_MOVEMENT } from "../../actions/movements";
 import { AnyAction } from "redux";
 import { LOG_OUT } from "../../actions/login";
+import {
+  DELETE_EGRESS_MOVEMENT,
+  DELETE_INGRESS_MOVEMENT,
+  DELETE_TRANSFER_MOVEMENT,
+  SET_EGRESS_STOCK,
+  SET_INGRESS_STOCK,
+  SET_TRANSFER_STOCK,
+} from "../../actions/stock";
 import {
   MovementState,
   initMovementState,
@@ -18,7 +25,23 @@ export const movementReducer = (
         data: action.payload,
       };
 
-    case DELETE_MOVEMENT:
+    case DELETE_INGRESS_MOVEMENT:
+      return {
+        ...state,
+        data: state.data.filter(
+          (movement) => movement.id !== action.payload.id
+        ),
+      };
+
+    case DELETE_EGRESS_MOVEMENT:
+      return {
+        ...state,
+        data: state.data.filter(
+          (movement) => movement.id !== action.payload.id
+        ),
+      };
+
+    case DELETE_TRANSFER_MOVEMENT:
       return {
         ...state,
         data: state.data.filter(
