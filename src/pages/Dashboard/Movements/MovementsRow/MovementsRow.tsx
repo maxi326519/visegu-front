@@ -61,8 +61,6 @@ export default function MovementsRow({ movement, handleDelete }: Props) {
           (storage: Storage) => storage.id === movement.Storage.egress
         )?.name || "";
     } else if (movement.type === MovementType.INGRESS) {
-      console.log(movement.Storage, storages);
-
       currentData.storageName =
         storages.find(
           (storage: Storage) => storage.id === movement.Storage.ingress

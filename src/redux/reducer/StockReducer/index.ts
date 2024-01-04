@@ -115,7 +115,7 @@ const stockReducer = (state = initialState, action: any) => {
       return {
         ...state,
         data: state.data.map((stock) =>
-          stock.id === egressMovement.Stocks.ingress
+          stock.id === ingressMovement.Stocks.ingress
             ? currentIngressStock
             : stock
         ),

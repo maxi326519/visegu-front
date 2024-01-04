@@ -1,4 +1,7 @@
-import { StockFilters, initStockFilters } from "../../../../../interfaces/Stock";
+import {
+  StockFilters,
+  initStockFilters,
+} from "../../../../../interfaces/Stock";
 import { useEffect, useState } from "react";
 import { Categories } from "../../../../../interfaces/Categories";
 import { Storage } from "../../../../../interfaces/Storage";
@@ -19,7 +22,7 @@ export default function Filters({
   handleSubmit,
   filters,
   storages,
-  categories
+  categories,
 }: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const [filter, setFilter] = useState<StockFilters>(initStockFilters());
@@ -42,11 +45,20 @@ export default function Filters({
   function handleLocalSubmit(event: React.FormEvent) {
     event.preventDefault();
     handleSubmit(filter);
+    handleFilter();
+  }
+
+  function handleClear() {
+    handleSubmit(initStockFilters());
   }
 
   return (
     <div className={style.filter}>
-      <button className={`btn btn-outline-primary ${style.btnFilter}`} type="button" onClick={handleFilter}>
+      <button
+        className={`btn btn-outline-primary ${style.btnFilter}`}
+        type="button"
+        onClick={handleFilter}
+      >
         <span>Filters</span>
         <img src={filterSvg} alt="filtros" />
       </button>
@@ -55,22 +67,28 @@ export default function Filters({
           <SelectInput
             name="storage"
             label="Storage"
-            list={storages.map((storage) => ({ id: storage.id!, label: storage.name }))}
+            list={storages.map((storage) => ({
+              id: storage.id!,
+              label: storage.name,
+            }))}
             value={filter.storage}
             handleChange={handleChangeFilter}
           />
           <SelectInput
             name="category"
             label="Category"
-            list={categories.map((category) => ({ id: category.id!, label: category.name }))}
+            list={categories.map((category) => ({
+              id: category.id!,
+              label: category.name,
+            }))}
             value={filter.category}
             handleChange={handleChangeFilter}
           />
-          <button
-            className="btn btn-success"
-            type="submit"
-          >
+          <button className="btn btn-success" type="submit">
             Aplicar
+          </button>
+          <button className="btn btn-outline-danger" type="button" onClick={handleClear}>
+            Borrar
           </button>
         </form>
       ) : null}

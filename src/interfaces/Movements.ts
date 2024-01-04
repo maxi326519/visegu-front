@@ -19,6 +19,7 @@ export enum MovementType {
   EGRESS = "Egress",
   INGRESS = "Ingress",
   TRANFER = "Transfer",
+  ANY = "",
 }
 
 export interface MovementFilters {
@@ -27,7 +28,6 @@ export interface MovementFilters {
   user: string;
   storage: string;
   supplier: string;
-  product: string;
 }
 
 export interface MovementError {
@@ -75,5 +75,4 @@ export const initMovementFilters = (): MovementFilters => ({
   user: "",
   storage: "",
   supplier: "",
-  product: "",
 });

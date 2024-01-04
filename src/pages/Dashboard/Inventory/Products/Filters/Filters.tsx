@@ -29,7 +29,7 @@ export default function Filters({
 
   useEffect(() => {
     setFilter(filters);
-  }, [filters]); 
+  }, [filters]);
 
   // Filter change
   function handleChangeFilter(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -45,6 +45,11 @@ export default function Filters({
   function handleLocalSubmit(event: React.FormEvent) {
     event.preventDefault();
     handleSubmit(filter);
+    handleFilter();
+  }
+
+  function handleClear() {
+    handleSubmit(initProductFilters());
   }
 
   return (
@@ -81,6 +86,9 @@ export default function Filters({
           />
           <button className="btn btn-success" type="submit">
             Aplicar
+          </button>
+          <button className="btn btn-outline-danger" type="button" onClick={handleClear}>
+            Borrar
           </button>
         </form>
       ) : null}

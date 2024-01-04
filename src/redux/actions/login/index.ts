@@ -22,6 +22,12 @@ export function login(login: LoginData): MyThunkAction {
       if (!user) throw new Error("User not found");
       if (!token) throw new Error("Token error");
 
+      // Add token to axios config
+      axios.interceptors.request.use((config) => {
+        config.headers.Authorization = `Bearer ${token}`;
+        return config;
+      });
+
       // Save tocken in local storage
       localStorage.setItem(TOKEN, token);
 
@@ -69,8 +75,6 @@ export function reLogin(): MyThunkAction {
 
       // Login with token
       const response = await axios.post("/login/token");
-
-      console.log(response.data);
 
       dispatch({
         type: PERSISTENCE,

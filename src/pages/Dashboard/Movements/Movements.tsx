@@ -7,6 +7,7 @@ import { useUsers } from "../../../hooks/useUser";
 import {
   Movement,
   MovementFilters,
+  MovementType,
   initMovementFilters,
 } from "../../../interfaces/Movements";
 
@@ -28,6 +29,7 @@ export default function Movements() {
   const storage = useStorage();
   const stock = useStock();
   const user = useUsers();
+  const [rows, setRows] = useState<Movement[]>([]);
   const [search, setSearch] = useState<string>("");
   const [filters, setFilters] = useState<MovementFilters>(
     initMovementFilters()
@@ -39,12 +41,73 @@ export default function Movements() {
   });
 
   useEffect(() => {
+    console.log(filters);
+  }, [filters]);
+
+  useEffect(() => {
     if (movements.data.length <= 0) movements.get(filters);
     if (products.data.length <= 0) products.get();
     if (storage.data.length <= 0) storage.get();
     if (stock.data.length <= 0) stock.get();
     if (user.data.length <= 0) user.get();
-  }, [filters]);
+  }, [
+    filters,
+    movements.data,
+    products.data,
+    storage.data,
+    stock.data,
+    user.data,
+  ]);
+
+  useEffect(() => {
+    setRows(
+      movements.data.filter((movement) => {
+        const currentProduct = products.data.find(
+          (p) => p.id === movement.ProductId
+        );
+
+        /* TYPE */
+        if (filters.type !== "" && movement.type !== filters.type) return false;
+
+        /* USER */
+        if (filters.user !== "" && movement.UserId !== filters.user)
+          return false;
+
+        /* STORAGE */
+        if (
+          filters.storage &&
+          movement.Storage.ingress !== filters.storage &&
+          movement.Storage.egress !== filters.storage
+        )
+          return false;
+
+        /* SUPPLIER */
+        if (filters.supplier && currentProduct?.SupplierId === filters.supplier)
+          return false;
+
+        /* PRODUCT */
+        /*         if (
+          currentProduct &&
+          (filters.search
+            .toLocaleLowerCase()
+            .includes(currentProduct.description.toLocaleLowerCase()) ||
+            filters.search
+              .toLocaleLowerCase()
+              .includes(currentProduct.skuNumber.toLocaleLowerCase()))
+        )
+          return false; */
+
+        return true;
+      })
+    );
+  }, [
+    filters,
+    products.data,
+    products.suppliers.data,
+    storage.data,
+    user.data,
+    movements.data,
+  ]);
 
   function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
     setSearch(event.target.name);
@@ -99,7 +162,7 @@ export default function Movements() {
             <Filters
               handleSubmit={setFilters}
               filters={filters}
-              products={products.data}
+              storages={storage.data}
               suppliers={products.suppliers.data}
             />
           </div>
@@ -147,8 +210,8 @@ export default function Movements() {
               <th>No Movements</th>
             </tr>
           ) : (
-            movements.data
-              ?.sort((a, b) => b.date.getTime() - a.date.getTime())
+            rows
+              .sort((a, b) => b.date.getTime() - a.date.getTime())
               .map((movement: Movement) => (
                 <MovementsRow
                   key={movement.id}
