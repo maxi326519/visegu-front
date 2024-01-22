@@ -1,20 +1,20 @@
+import { closeLoading, openLoading } from "../../redux/actions/loading";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { login } from "../../redux/actions/login/index";
 import {
   LoginData,
   LoginError,
   initLogin,
   initLoginError,
 } from "../../interfaces/Login";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { login } from "../../redux/actions/login/index";
+import swal from "sweetalert";
+
+import Input from "../../components/Inputs/Input";
 
 import styles from "./Login.module.css";
 import logo from "../../assets/img/logo.png";
-
-import Input from "../../components/Inputs/Input";
-import swal from "sweetalert";
-import { closeLoading, openLoading } from "../../redux/actions/loading";
 
 export default function Login() {
   const redirect = useNavigate();
@@ -43,8 +43,8 @@ export default function Login() {
     dispatch(openLoading());
     dispatch<any>(login(user))
       .then(() => {
-        dispatch(closeLoading());
-        redirect("/dashboard/products");
+        redirect("/dashboard/stock");
+        dispatch<any>(closeLoading());
       })
       .catch((err: Error) => {
         console.log(err.message);

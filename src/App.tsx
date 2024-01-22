@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./interfaces/ReduxState";
 import { useEffect } from "react";
 import { reLogin } from "./redux/actions/login";
+import { UserRol } from "./interfaces/User";
 import axios from "axios";
 
 import Login from "./pages/Login/Login";
@@ -21,22 +22,25 @@ import Reports from "./pages/Dashboard/Reports/Reports";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Loading from "./components/Loading/Loading";
+import UserAccess from "./components/UserAccess/UserAccess";
 
 function App() {
   const dispatch = useDispatch();
-  const loading = useSelector((state: RootState) => state.loading);
   const redirect = useNavigate();
+  const loading = useSelector((state: RootState) => state.loading);
   const user = useSelector((state: RootState) => state.login);
 
   axios.defaults.baseURL = "https://api.visegu.com";
-/*   axios.defaults.baseURL = "http://localhost:3001"; */
+  /* axios.defaults.baseURL = "http://localhost:3001"; */
 
   useEffect(() => {
     redirect("/login");
     dispatch<any>(openLoading());
     dispatch<any>(reLogin())
       .then(() => {
-        redirect("/dashboard/products");
+        user.rol === UserRol.ADMIN
+          ? redirect("/dashboard/products")
+          : redirect("/dashboard/stock");
         dispatch<any>(closeLoading());
       })
       .catch((error: Error) => {
@@ -61,12 +65,41 @@ function App() {
           <SideBarAccordion />
           <Navbar />
           <Routes>
-            <Route path="/dashboard/users" element={<Users />} />
-            <Route path="/dashboard/products" element={<Products />} />
             <Route path="/dashboard/stock" element={<Stocks />} />
-            <Route path="/dashboard/storages" element={<Storages />} />
-            <Route path="/dashboard/movements" element={<Movements />} />
-            <Route path="/dashboard/reports" element={<Reports />} />
+            <Route path="/dashboard/404" element={<Reports />} />
+            <Route
+              path="/dashboard/users"
+              element={
+                <UserAccess>
+                  <Users />
+                </UserAccess>
+              }
+            />
+            <Route
+              path="/dashboard/products"
+              element={
+                <UserAccess>
+                  <Products />
+                </UserAccess>
+              }
+            />
+            <Route
+              path="/dashboard/storages"
+              element={
+                <UserAccess>
+                  <Storages />
+                </UserAccess>
+              }
+            />
+            <Route
+              path="/dashboard/movements"
+              element={
+                <UserAccess>
+                  <Movements />
+                </UserAccess>
+              }
+            />
+            {/*             <Route path="/dashboard/reports" element={<Reports />} /> */}
           </Routes>
         </div>
       )}
