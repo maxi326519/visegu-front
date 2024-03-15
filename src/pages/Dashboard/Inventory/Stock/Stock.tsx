@@ -50,6 +50,7 @@ export default function Stocks() {
   // Get initial stock
   useEffect(() => {
     if (product.data.length <= 0) product.get();
+    if (product.data.length <= 0) product.categories.get();
     if (storage.data.length <= 0) storage.get();
     if (stocks.data.length <= 0) stocks.get();
     if (users.data.length <= 0) users.get();
@@ -190,12 +191,7 @@ export default function Stocks() {
                 <img src={searchSvg} alt="search" />
               </button>
             </div>
-            <Filters
-              handleSubmit={setFilters}
-              filters={filters}
-              storages={storage.data}
-              categories={product.categories.data}
-            />
+            <Filters handleSubmit={setFilters} filters={filters} />
             <button
               className="btn btn-outline-primary"
               type="button"

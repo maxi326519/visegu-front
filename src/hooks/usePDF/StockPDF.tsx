@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Image,
 } from "@react-pdf/renderer";
+import dateFormat from "../../scripts/dateFormat";
 
 import logo from "../../assets/img/logo.png";
 
@@ -25,11 +26,18 @@ const styles = StyleSheet.create({
   header: {
     display: "flex",
     justifyContent: "center",
+    alignContent: "center",
     width: "100%",
   },
   title: {
-    fontSize: "15px",
+    fontSize: "20px",
     fontWeight: "bold",
+    textAlign: "center",
+  },
+  subTitle: {
+    paddingTop: "10px",
+    paddingBottom: "20px",
+    textAlign: "center",
   },
   table: {
     display: "flex",
@@ -86,6 +94,9 @@ export default function ProductPDF({
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <Text style={styles.title}>Visegu</Text>
+          <Text style={styles.subTitle}>
+            {dateFormat(new Date())} - Stock list
+          </Text>
         </View>
         <View style={styles.table}>
           <View

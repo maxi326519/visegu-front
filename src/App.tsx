@@ -38,9 +38,9 @@ function App() {
     dispatch<any>(openLoading());
     dispatch<any>(reLogin())
       .then(() => {
-/*         user.rol === UserRol.ADMIN
+        user.rol === UserRol.ADMIN
           ? redirect("/dashboard/products")
-          : redirect("/dashboard/stock"); */
+          : redirect("/dashboard/stock");
         dispatch<any>(closeLoading());
       })
       .catch((error: Error) => {

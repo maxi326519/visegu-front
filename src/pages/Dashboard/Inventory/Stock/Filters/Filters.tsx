@@ -1,10 +1,10 @@
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../interfaces/ReduxState";
 import {
   StockFilters,
   initStockFilters,
 } from "../../../../../interfaces/Stock";
-import { useEffect, useState } from "react";
-import { Categories } from "../../../../../interfaces/Categories";
-import { Storage } from "../../../../../interfaces/Storage";
 
 import SelectInput from "../../../../../components/Inputs/SelectInput";
 
@@ -14,16 +14,13 @@ import filterSvg from "../../../../../assets/icons/filter.svg";
 interface Props {
   handleSubmit: (filters: StockFilters) => void;
   filters: StockFilters;
-  storages: Storage[];
-  categories: Categories[];
 }
 
-export default function Filters({
-  handleSubmit,
-  filters,
-  storages,
-  categories,
-}: Props) {
+export default function Filters({ handleSubmit, filters }: Props) {
+  const categories = useSelector(
+    (state: RootState) => state.products.categories
+  );
+  const storages = useSelector((state: RootState) => state.storage);
   const [open, setOpen] = useState<boolean>(false);
   const [filter, setFilter] = useState<StockFilters>(initStockFilters());
 
@@ -87,7 +84,11 @@ export default function Filters({
           <button className="btn btn-success" type="submit">
             Aplicar
           </button>
-          <button className="btn btn-outline-danger" type="button" onClick={handleClear}>
+          <button
+            className="btn btn-outline-danger"
+            type="button"
+            onClick={handleClear}
+          >
             Borrar
           </button>
         </form>
