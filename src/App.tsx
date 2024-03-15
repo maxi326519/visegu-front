@@ -18,11 +18,11 @@ import Storages from "./pages/Dashboard/Inventory/Storages/Storages";
 import Users from "./pages/Dashboard/Users/Users";
 import Movements from "./pages/Dashboard/Movements/Movements";
 import Reports from "./pages/Dashboard/Reports/Reports";
+import Loading from "./components/Loading/Loading";
+import UserAccess from "./components/UserAccess/UserAccess";
 
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Loading from "./components/Loading/Loading";
-import UserAccess from "./components/UserAccess/UserAccess";
 
 function App() {
   const dispatch = useDispatch();
@@ -38,9 +38,9 @@ function App() {
     dispatch<any>(openLoading());
     dispatch<any>(reLogin())
       .then(() => {
-        user.rol === UserRol.ADMIN
+/*         user.rol === UserRol.ADMIN
           ? redirect("/dashboard/products")
-          : redirect("/dashboard/stock");
+          : redirect("/dashboard/stock"); */
         dispatch<any>(closeLoading());
       })
       .catch((error: Error) => {
@@ -65,6 +65,7 @@ function App() {
           <SideBarAccordion />
           <Navbar />
           <Routes>
+            <Route path="/dashboard/stock/:skuNumber" element={<Stocks />} />
             <Route path="/dashboard/stock" element={<Stocks />} />
             <Route path="/dashboard/404" element={<Reports />} />
             <Route

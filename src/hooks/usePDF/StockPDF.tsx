@@ -1,8 +1,17 @@
-import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
+import { Categories } from "../../interfaces/Categories";
 import { Storage } from "../../interfaces/Storage";
 import { Product } from "../../interfaces/Product";
 import { Stock } from "../../interfaces/Stock";
-import { Categories } from "../../interfaces/Categories";
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  StyleSheet,
+  Image,
+} from "@react-pdf/renderer";
+
+import logo from "../../assets/img/logo.png";
 
 const styles = StyleSheet.create({
   page: {
@@ -12,6 +21,15 @@ const styles = StyleSheet.create({
   viewer: {
     width: "100%", //the pdf viewer will take up all of the width and height
     height: "calc(100% - 50px)",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+  },
+  title: {
+    fontSize: "15px",
+    fontWeight: "bold",
   },
   table: {
     display: "flex",
@@ -66,6 +84,9 @@ export default function ProductPDF({
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Visegu</Text>
+        </View>
         <View style={styles.table}>
           <View
             style={{

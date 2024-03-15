@@ -1,8 +1,10 @@
 import { closeLoading, openLoading } from "../../../../redux/actions/loading";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useProducts } from "../../../../hooks/useProduct";
 import { useStorage } from "../../../../hooks/useStorage";
+import { Movement } from "../../../../interfaces/Movements";
 import { useStock } from "../../../../hooks/useStock";
 import { useUsers } from "../../../../hooks/useUser";
 import { usePDF } from "../../../../hooks/usePDF";
@@ -28,11 +30,14 @@ import printSvg from "../../../../assets/icons/printer.svg";
 
 export default function Stocks() {
   const dispatch = useDispatch();
+  const redirect = useNavigate();
   const product = useProducts();
   const storage = useStorage();
   const stocks = useStock();
   const users = useUsers();
   const pdf = usePDF();
+  const match = useParams();
+  const [skuNumber, setSkuNumber] = useState<string>("");
   const [rows, setRows] = useState<Stock[]>([]);
   const [filters, setFilters] = useState<StockFilters>(initStockFilters());
   const [form, setForm] = useState({
@@ -49,6 +54,14 @@ export default function Stocks() {
     if (stocks.data.length <= 0) stocks.get();
     if (users.data.length <= 0) users.get();
   }, []);
+
+  useEffect(() => {
+    console.log(match?.skuNumber);
+    if (match?.skuNumber) {
+      setSkuNumber(match.skuNumber);
+      setForm({ ...form, ingress: !form.ingress });
+    }
+  }, [match, product.data]);
 
   useEffect(() => {
     setRows(
@@ -93,6 +106,7 @@ export default function Stocks() {
   // Show ingress stock form
   function handleIngressForm() {
     setForm({ ...form, ingress: !form.ingress });
+    setSkuNumber("");
   }
 
   // Show egress stock form
@@ -135,12 +149,18 @@ export default function Stocks() {
     } else swal("", "You don't have products to download", "warning");
   }
 
+  function handleNewIngressStock(movement: Movement) {
+    stocks.setIngress(movement);
+    redirect("/dashboard/stock");
+  }
+
   return (
     <div className={`toLeft ${styles.dashboard}`}>
       {form.ingress && (
         <IngressForm
+          skuNumber={skuNumber}
           handleClose={handleIngressForm}
-          handleSubmit={stocks.setIngress}
+          handleSubmit={handleNewIngressStock}
         />
       )}
       {form.egress && (

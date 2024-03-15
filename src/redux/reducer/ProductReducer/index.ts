@@ -152,7 +152,7 @@ const productsReducer = (state = initialState, action: any): ProductsState => {
       if (!currentProduct) throw new Error("Product not found in redux");
 
       // Update quantity
-      currentProduct.amount -= egressMovement.quantity;
+      currentProduct.amount += egressMovement.quantity;
 
       // Update product
       return {

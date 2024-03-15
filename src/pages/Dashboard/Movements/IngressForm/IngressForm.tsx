@@ -1,6 +1,6 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../interfaces/ReduxState";
-import { useState } from "react";
 import {
   Movement,
   MovementError,
@@ -14,19 +14,36 @@ import SelectInput from "../../../../components/Inputs/SelectInput";
 import DataSelector from "../../../../components/DataSelector/DataSelector";
 
 import styles from "./IngressForm.module.css";
+import { match } from "assert";
 
 export interface Props {
+  skuNumber?: string;
   handleClose: () => void;
   handleSubmit: (movement: Movement) => void;
 }
 
-export default function IngressForm({ handleClose, handleSubmit }: Props) {
+export default function IngressForm({
+  skuNumber,
+  handleClose,
+  handleSubmit,
+}: Props) {
   const products = useSelector((state: RootState) => state.products.data);
   const storage = useSelector((state: RootState) => state.storage);
   const users = useSelector((state: RootState) => state.users);
   const user = useSelector((state: RootState) => state.login);
   const [movement, setMovement] = useState<Movement>(initMovement(user.id));
   const [error, setError] = useState<MovementError>(initMovementError());
+
+  useEffect(() => {
+    const product = products.find((product) => product.skuNumber === skuNumber);
+
+    if (product) {
+      setMovement({
+        ...movement,
+        ProductId: product.id!,
+      });
+    }
+  }, [skuNumber]);
 
   // Movement Change
   function handleChange(
@@ -68,7 +85,7 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
   function handleSelectProduct(productId: string) {
     setMovement({
       ...movement,
-      ProductId: productId
+      ProductId: productId,
     });
   }
 
@@ -166,6 +183,7 @@ export default function IngressForm({ handleClose, handleSubmit }: Props) {
             }))}
             selected={[movement.ProductId || ""]}
             placeHolder="Select a product"
+            defaultSearch={skuNumber || ""}
             onSelect={handleSelectProduct}
             onRemove={() => handleSelectProduct("")}
           />

@@ -1,20 +1,33 @@
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 
 import styles from "./DataSelector.module.css";
 
-type Data = Array<{ id: string, label: string }>;
+type Data = Array<{ id: string; label: string }>;
 
 interface Props {
   data: Data;
   selected: string[];
   placeHolder: string;
+  defaultSearch?: string;
+  multiple?: boolean;
   onSelect: (id: string) => void;
   onRemove: (id: string) => void;
-  multiple?: boolean;
 }
 
-export default function DataSelector({ data, selected, placeHolder, onSelect, onRemove, multiple }: Props) {
+export default function DataSelector({
+  data,
+  selected,
+  placeHolder,
+  defaultSearch,
+  multiple,
+  onSelect,
+  onRemove,
+}: Props) {
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    if (defaultSearch) setSearch(defaultSearch);
+  }, [defaultSearch]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSearch(event?.target.value);
@@ -55,28 +68,26 @@ export default function DataSelector({ data, selected, placeHolder, onSelect, on
         </label>
       </div>
       <div className={styles.dropBox}>
-        {
-          data
-            .filter((item) => item.label.includes(search))
-            .map((item) => (
-              <div
-                key={item.id}
-                className={styles.dropItem}
-                onClick={() => onSelect(item.id)}
-              >
-                <input
-                  id={`check-${item.id}`}
-                  name={`check-${item.id}`}
-                  className="form-check-input"
-                  type="checkbox"
-                  checked={selected.some((id) => id === item.id)}
-                  onChange={() => handleCheck(item.id!)}
-                />
-                <label htmlFor={`check-${item.id}`}>{item.label}</label>
-              </div>
-            ))
-        }
+        {data
+          .filter((item) => item.label.includes(search))
+          .map((item) => (
+            <div
+              key={item.id}
+              className={styles.dropItem}
+              onClick={() => onSelect(item.id)}
+            >
+              <input
+                id={`check-${item.id}`}
+                name={`check-${item.id}`}
+                className="form-check-input"
+                type="checkbox"
+                checked={selected.some((id) => id === item.id)}
+                onChange={() => handleCheck(item.id!)}
+              />
+              <label htmlFor={`check-${item.id}`}>{item.label}</label>
+            </div>
+          ))}
       </div>
     </div>
-  )
+  );
 }

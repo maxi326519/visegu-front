@@ -1,14 +1,16 @@
 import { closeLoading, openLoading } from "../../../../redux/actions/loading";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useProducts } from "../../../../hooks/useProduct";
-import { Cache } from "../../../../interfaces/Categories";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { usePDF } from "../../../../hooks/usePDF";
+import { Cache } from "../../../../interfaces/Categories";
 import {
   Product,
   ProductFilters,
   initProductFilters,
 } from "../../../../interfaces/Product";
+import swal from "sweetalert";
 
 import ProductRow from "./ProductRow/ProductRow";
 import ProductForm from "./ProductForm/ProductForm";
@@ -21,9 +23,9 @@ import searchSvg from "../../../../assets/icons/search.svg";
 import categoriesSvg from "../../../../assets/icons/categories.svg";
 import supplierSvg from "../../../../assets/icons/supplier.svg";
 import printSvg from "../../../../assets/icons/printer.svg";
-import swal from "sweetalert";
 
 export default function Products() {
+  const redirect = useNavigate();
   const dispatch = useDispatch();
   const products = useProducts();
   const pdf = usePDF();
@@ -86,6 +88,18 @@ export default function Products() {
     handleForm();
   }
 
+  // Delete a product
+  function handleDelete(productId: string) {
+    swal({
+      icon: "warning",
+      text: "Are you sure you want to delete this products?",
+      buttons: {
+        Accept: true,
+        Cancel: true,
+      },
+    }).then((response) => (response = "Accept" && products.remove(productId)));
+  }
+
   // Toggle product form
   function handleForm() {
     setForm(!form);
@@ -104,7 +118,13 @@ export default function Products() {
 
   // Submit for the form
   function handleSubmit(product: Product) {
-    data ? products.update(product) : products.set(product);
+    if (data) {
+      products.update(product);
+    } else {
+      products.set(product).then(() => {
+        redirect(`/dashboard/stock/${product.skuNumber}`);
+      });
+    }
   }
 
   // Update categories list
@@ -244,7 +264,7 @@ export default function Products() {
                 key={product.id}
                 product={product}
                 handleEdit={handleEdit}
-                handleDelete={products.remove}
+                handleDelete={handleDelete}
               />
             ))
           )}
