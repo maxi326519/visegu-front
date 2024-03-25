@@ -1,9 +1,10 @@
 import { closeLoading, openLoading } from "../../../../redux/actions/loading";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useProducts } from "../../../../hooks/useProduct";
 import { useStorage } from "../../../../hooks/useStorage";
+import { RootState } from "../../../../interfaces/ReduxState";
 import { Movement } from "../../../../interfaces/Movements";
 import { useStock } from "../../../../hooks/useStock";
 import { useUsers } from "../../../../hooks/useUser";
@@ -35,8 +36,9 @@ export default function Stocks() {
   const storage = useStorage();
   const stocks = useStock();
   const users = useUsers();
-  const pdf = usePDF();
   const match = useParams();
+  const pdf = usePDF();
+  const user = useSelector((state: RootState) => state.login);
   const [skuNumber, setSkuNumber] = useState<string>("");
   const [rows, setRows] = useState<Stock[]>([]);
   const [filters, setFilters] = useState<StockFilters>(initStockFilters());
@@ -49,12 +51,14 @@ export default function Stocks() {
 
   // Get initial stock
   useEffect(() => {
-    if (product.data.length <= 0) product.get();
-    if (product.data.length <= 0) product.categories.get();
-    if (storage.data.length <= 0) storage.get();
-    if (stocks.data.length <= 0) stocks.get();
-    if (users.data.length <= 0) users.get();
-  }, []);
+    if (user.token) {
+      if (product.data.length <= 0) product.get();
+      if (product.data.length <= 0) product.categories.get();
+      if (storage.data.length <= 0) storage.get();
+      if (stocks.data.length <= 0) stocks.get();
+      if (users.data.length <= 0) users.get();
+    }
+  }, [user]);
 
   useEffect(() => {
     console.log(match?.skuNumber);

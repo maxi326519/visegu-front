@@ -1,8 +1,9 @@
 import { closeLoading, openLoading } from "../../../../redux/actions/loading";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useProducts } from "../../../../hooks/useProduct";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { RootState } from "../../../../interfaces/ReduxState";
 import { usePDF } from "../../../../hooks/usePDF";
 import { Cache } from "../../../../interfaces/Categories";
 import {
@@ -29,6 +30,7 @@ export default function Products() {
   const dispatch = useDispatch();
   const products = useProducts();
   const pdf = usePDF();
+  const user = useSelector((state: RootState) => state.login);
   const [form, setForm] = useState<boolean>(false);
   const [data, setData] = useState<Product | null>(null);
   const [rows, setRows] = useState<Product[]>([]);
@@ -39,10 +41,12 @@ export default function Products() {
 
   // Get initial product
   useEffect(() => {
-    if (products.data.length <= 0) products.get();
-    if (products.categories.data.length <= 0) products.categories.get();
-    if (products.suppliers.data.length <= 0) products.suppliers.get();
-  }, []);
+    if (user.token) {
+      if (products.data.length <= 0) products.get();
+      if (products.categories.data.length <= 0) products.categories.get();
+      if (products.suppliers.data.length <= 0) products.suppliers.get();
+    }
+  }, [user]);
 
   // Filters products rows
   useEffect(() => {
