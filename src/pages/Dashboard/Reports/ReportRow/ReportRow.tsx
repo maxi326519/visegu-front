@@ -7,13 +7,15 @@ import removeSvg from "../../../../assets/icons/remove.svg";
 interface Props {
   report: Report;
   handleEdit: (report: Report) => void;
-  handleDelete: (reportId: string) => void;
+  handleDeleteWork: (reportId: string) => void;
+  handleDeleteInspection: (reportId: string) => void;
 }
 
 export default function ReportRow({
   report,
   handleEdit,
-  handleDelete,
+  handleDeleteWork,
+  handleDeleteInspection,
 }: Props) {
   return (
     <tr className={styles.row}>
@@ -31,7 +33,7 @@ export default function ReportRow({
       <button
         className="btn btn-outline-danger"
         type="button"
-        onClick={() => handleDelete(report.id!)}
+        onClick={() => {}}
       >
         <img src={removeSvg} alt="remove" />
       </button>

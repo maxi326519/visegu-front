@@ -2,6 +2,8 @@ import { pdf } from "@react-pdf/renderer";
 
 import StockPDF from "./StockPDF";
 import ProductPDF from "./ProductsPDF";
+import WorkPDF from "./WorkPDF";
+import InspectionPDF from "./InspectionPDF";
 
 export function usePDF() {
   async function openProductPDF(product, categories, suppliers) {
@@ -35,5 +37,23 @@ export function usePDF() {
     window.open(url, "_blank");
   }
 
-  return { openProductPDF, openStockPDF };
+  async function openWorkPDF(report) {
+    // Generate PDF
+    const blob = await pdf(<WorkPDF report={report} />).toBlob();
+
+    // Create url and open PDF
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+  }
+
+  async function openInspectionPDF(report) {
+    // Generate PDF
+    const blob = await pdf(<InspectionPDF report={report} />).toBlob();
+
+    // Create url and open PDF
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+  }
+
+  return { openProductPDF, openStockPDF, openWorkPDF, openInspectionPDF };
 }

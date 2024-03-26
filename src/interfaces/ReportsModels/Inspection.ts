@@ -8,7 +8,7 @@ export interface Inspection {
   licenseNumber: string;
   state: string;
   location: string;
-  quipment: string;
+  equipment: string;
   ownerOrLessor: string;
   ok1: string;
   repair1: string;
@@ -80,7 +80,7 @@ export const initInspection = (): Inspection => ({
   licenseNumber: "",
   state: "",
   location: "",
-  quipment: "",
+  equipment: "",
   ownerOrLessor: "",
   ok1: "",
   repair1: "",

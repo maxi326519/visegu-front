@@ -6,6 +6,7 @@ import stockReducer from "./StockReducer";
 import StorageReducer from "./StorageReducer";
 import userReducer from "./UsersReducer";
 import { loginReducer } from "./LoginReducer";
+import ReportsReducer from "./ReducerReducer";
 
 const rootReducer = combineReducers({
   loading: loadingReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   stock: stockReducer,
   storage: StorageReducer,
   movements: movementReducer,
+  reports: ReportsReducer,
 });
 
 export default rootReducer;

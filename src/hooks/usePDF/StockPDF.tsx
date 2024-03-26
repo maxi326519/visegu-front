@@ -8,11 +8,8 @@ import {
   View,
   Document,
   StyleSheet,
-  Image,
 } from "@react-pdf/renderer";
 import dateFormat from "../../scripts/dateFormat";
-
-import logo from "../../assets/img/logo.png";
 
 const styles = StyleSheet.create({
   page: {

@@ -1,12 +1,18 @@
 import { Movement, MovementFilters, initMovementFilters } from "./Movements";
+import {
+  initReportsFilters,
+  Report,
+  ReportsFilters,
+} from "./ReportsModels/Reports";
 import { Stock, StockFilters, initStockFilters } from "./Stock";
+import { initReportLists, ReportLists } from "./ReportsModels/Lists";
 import { User, UserRol, UserStatus } from "./User";
 import { ThunkAction } from "redux-thunk";
 import { Categories } from "./Categories";
+import { Suppliers } from "./Suppliers";
 import { AnyAction } from "redux";
 import { Product } from "./Product";
 import { Storage } from "./Storage";
-import { Suppliers } from "./Suppliers";
 
 export interface LoginState {
   id: string;
@@ -35,6 +41,12 @@ export interface MovementState {
   filters: MovementFilters;
 }
 
+export interface ReportsState {
+  data: Report[];
+  filters: ReportsFilters;
+  lists: ReportLists;
+}
+
 export interface RootState {
   loading: boolean;
   login: LoginState;
@@ -43,6 +55,7 @@ export interface RootState {
   stock: StockState;
   storage: Storage[];
   movements: MovementState;
+  reports: ReportsState;
 }
 
 export type MyThunkAction = ThunkAction<
@@ -79,4 +92,10 @@ export const initStorageState = (): Storage[] => [];
 export const initMovementState = (): MovementState => ({
   data: [],
   filters: initMovementFilters(),
+});
+
+export const initReportsState = (): ReportsState => ({
+  data: [],
+  filters: initReportsFilters(),
+  lists: initReportLists(),
 });

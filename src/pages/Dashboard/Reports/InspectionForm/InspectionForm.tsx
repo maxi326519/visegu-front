@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { Inspection, InspectionError, initInspection, initInspectionError } from "../../../../interfaces/ReportsModels/Inspection";
+import {
+  Inspection,
+  InspectionError,
+  initInspection,
+  initInspectionError,
+} from "../../../../interfaces/ReportsModels/Inspection";
 
 import styles from "./InspectionForm.module.css";
 
@@ -9,7 +14,11 @@ export interface Props {
   handleSubmit: (inspection: Inspection) => void;
 }
 
-export default function InspectionForm({ data, handleClose, handleSubmit }: Props) {
+export default function InspectionForm({
+  data,
+  handleClose,
+  handleSubmit,
+}: Props) {
   const [report, setReport] = useState<Inspection>(initInspection());
   const [error, setError] = useState<InspectionError>(initInspectionError());
 
@@ -19,7 +28,9 @@ export default function InspectionForm({ data, handleClose, handleSubmit }: Prop
   }, [data]);
 
   // Change product
-  function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+  function handleChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) {
     setReport({ ...report, [event.target.name]: event.target.value });
     setError({ ...error, [event.target.name]: "" });
   }
@@ -31,7 +42,7 @@ export default function InspectionForm({ data, handleClose, handleSubmit }: Prop
     if (validations()) {
       console.log(report);
       handleSubmit(report);
-      /*       handleClose(); */
+      // handleClose();
     }
   }
 
@@ -49,7 +60,13 @@ export default function InspectionForm({ data, handleClose, handleSubmit }: Prop
       <div className={styles.container}>
         <header className={styles.header}>
           <h3 className={styles.headerTitle}>InspectionForm</h3>
-          <button className={styles.headerClose} type="button" onClick={handleClose}>X</button>
+          <button
+            className={styles.headerClose}
+            type="button"
+            onClick={handleClose}
+          >
+            X
+          </button>
         </header>
         <form className={styles.form} onSubmit={handleLocalSubmit}>
           <div className={styles.textToComplete}>
@@ -75,11 +92,7 @@ export default function InspectionForm({ data, handleClose, handleSubmit }: Prop
                 onChange={handleChange}
               />
               <label>New BIT</label>
-              <input
-                name="BIT"
-                value={report.BIT}
-                onChange={handleChange}
-              />
+              <input name="BIT" value={report.BIT} onChange={handleChange} />
             </div>
             <div className={styles.row}>
               <label>License Number</label>
@@ -105,7 +118,7 @@ export default function InspectionForm({ data, handleClose, handleSubmit }: Prop
               <label>Equipment Mark and Number</label>
               <input
                 name="quipment"
-                value={report.quipment}
+                value={report.equipment}
                 onChange={handleChange}
               />
               <label>Chassis Owwner or Lessor</label>
@@ -505,7 +518,7 @@ export default function InspectionForm({ data, handleClose, handleSubmit }: Prop
             Save
           </button>
         </form>
-      </div >
-    </div >
-  )
+      </div>
+    </div>
+  );
 }

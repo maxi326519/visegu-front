@@ -2,21 +2,31 @@ export interface WorkReport {
   id?: "";
   customer: string;
   location: string;
-  timeToStartServices: string;
+  timeToStartServices: Date;
   equipment: string;
-  dateOfRepair: string;
-  timeFinishService: string;
+  dateOfRepair: Date;
+  timeFinishService: Date;
   licensePlate: string;
   PO: string;
   VIN: string;
   mechanicName: string;
+  check: {
+    RIF: boolean;
+    ROF: boolean;
+    RIR: boolean;
+    ROR: boolean;
+    LIF: boolean;
+    LOF: boolean;
+    LIR: boolean;
+    LOR: boolean;
+  };
   tableData: Array<TableData>;
 }
 
 export interface TableData {
   code: string;
   workDescription: string;
-  laborTime: string;
+  laborTime: number;
   parts: string;
   total: string;
 }
@@ -38,14 +48,24 @@ export interface WorkReportError {
 export const initWorkReport = (): WorkReport => ({
   customer: "",
   location: "",
-  timeToStartServices: "",
+  timeToStartServices: new Date(),
   equipment: "",
-  dateOfRepair: "",
-  timeFinishService: "",
+  dateOfRepair: new Date(),
+  timeFinishService: new Date(),
   licensePlate: "",
   PO: "",
   VIN: "",
   mechanicName: "",
+  check: {
+    RIF: false,
+    ROF: false,
+    RIR: false,
+    ROR: false,
+    LIF: false,
+    LOF: false,
+    LIR: false,
+    LOR: false,
+  },
   tableData: [],
 });
 
@@ -66,7 +86,7 @@ export const initWorkReportError = (): WorkReportError => ({
 export const initTableData = () => ({
   code: "",
   workDescription: "",
-  laborTime: "",
+  laborTime: 0,
   parts: "",
   total: "",
 });

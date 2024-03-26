@@ -10,7 +10,7 @@ import products from "../../assets/icons/product.svg";
 import stock from "../../assets/icons/stock.svg";
 import storages from "../../assets/icons/storages.svg";
 import movements from "../../assets/icons/transfer.svg";
-/* import reports from "../../assets/icons/reports.svg"; */
+import reports from "../../assets/icons/reports.svg";
 import logo from "../../assets/img/logo.png";
 
 const sideList = [
@@ -44,12 +44,12 @@ const sideList = [
     icon: movements,
     permissions: UserRol.ADMIN,
   },
-/*   {
+  {
     label: "Reports",
     path: "/dashboard/Reports",
     icon: reports,
     permissions: UserRol.USER,
-  }, */
+  },
 ];
 
 export default function SideBarAccordion() {

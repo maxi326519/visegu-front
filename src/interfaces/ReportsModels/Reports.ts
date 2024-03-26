@@ -9,3 +9,10 @@ export enum ReportTypes {
   INSPECTION,
 }
 
+export interface ReportsFilters {
+  date: Date;
+}
+
+export const initReportsFilters = (): ReportsFilters => ({
+  date: new Date(),
+});

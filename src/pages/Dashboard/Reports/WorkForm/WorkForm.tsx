@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
-import { TableData, WorkReport, WorkReportError, initTableData, initWorkReport, initWorkReportError } from "../../../../interfaces/ReportsModels/Work";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../interfaces/ReduxState";
+import {
+  TableData,
+  WorkReport,
+  WorkReportError,
+  initTableData,
+  initWorkReport,
+  initWorkReportError,
+} from "../../../../interfaces/ReportsModels/Work";
 
 import styles from "./WorkForm.module.css";
+import Checkbox from "../../../../components/Inputs/Checkbox";
 
 export interface Props {
   data: any;
@@ -10,40 +20,66 @@ export interface Props {
 }
 
 export default function WorkForm({ data, handleClose, handleSubmit }: Props) {
+  const list = useSelector((state: RootState) => state.reports.lists);
+  const user = useSelector((state: RootState) => state.login);
   const [report, setReport] = useState<WorkReport>(initWorkReport());
   const [error, setError] = useState<WorkReportError>(initWorkReportError());
 
   // If data is selected for editing, update product local data
   useEffect(() => {
-    if (data) setReport(data);
-  }, [data]);
+    if (data) {
+      setReport({
+        ...data,
+        mechanicName: user.name,
+      });
+    }
+  }, [data, user]);
+
+  useEffect(() => {
+    console.log(report);
+  }, [report]);
 
   // Change report
-  function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+  function handleChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) {
     setReport({ ...report, [event.target.name]: event.target.value });
     setError({ ...error, [event.target.name]: "" });
   }
 
-  // Change table item
-  function handleChangeRow(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, index: number) {
+  function handleCheck(event: React.ChangeEvent<HTMLInputElement>) {
     setReport({
       ...report,
-      tableData: report.tableData.map((data, i) => (
+      check: {
+        ...report.check,
+        [event.target.name]: event.target.checked,
+      },
+    });
+  }
+
+  // Change table item
+  function handleChangeRow(
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    index: number
+  ) {
+    console.log(event.target.name, event.target.value, index);
+
+    setReport({
+      ...report,
+      tableData: report.tableData.map((data, i) =>
         i === index
           ? { ...data, [event.target.name]: event.target.value }
           : data
-      ))
+      ),
     });
   }
 
   // Add new row in the table
   function handleAddRow() {
+    console.log("Agregando datos a la tabla");
     setReport({
       ...report,
-      tableData: [
-        ...report.tableData,
-        initTableData()
-      ]
+      tableData: [...report.tableData, initTableData()],
     });
   }
 
@@ -53,7 +89,7 @@ export default function WorkForm({ data, handleClose, handleSubmit }: Props) {
 
     if (validations()) {
       handleSubmit(report);
-      handleClose();
+      // handleClose();
     }
   }
 
@@ -71,35 +107,52 @@ export default function WorkForm({ data, handleClose, handleSubmit }: Props) {
       <div className={styles.container}>
         <header className={styles.header}>
           <h3 className={styles.headerTitle}>New Report</h3>
-          <button className={styles.headerClose} type="button" onClick={handleClose}>X</button>
+          <button
+            className={styles.headerClose}
+            type="button"
+            onChange={handleClose}
+          >
+            X
+          </button>
         </header>
         <form className={styles.form} onSubmit={handleLocalSubmit}>
           <h2 className={styles.headerTitle}>Work order</h2>
           <div className={styles.formHeader}>
             <div>
               <label htmlFor="customer">Customer</label>
-              <input
+              <select
                 id="customer"
                 name="customer"
                 value={report.customer}
                 onChange={handleChange}
-              />
+              >
+                <option>Seleccionar</option>
+                <option>Customer 1</option>
+              </select>
             </div>
             <div>
               <label htmlFor="location">Location</label>
-              <input
+              <select
                 id="location"
                 name="location"
                 value={report.location}
                 onChange={handleChange}
-              />
+              >
+                <option>Seleccionar</option>
+                {list.locations.map((location) => (
+                  <option value={location}>{location}</option>
+                ))}
+              </select>
             </div>
             <div>
-              <label htmlFor="timeToStartServices">Time to start services</label>
+              <label htmlFor="timeToStartServices">
+                Time to start services
+              </label>
               <input
                 id="timeToStartServices"
                 name="timeToStartServices"
-                value={report.timeToStartServices}
+                type="date"
+                // value={report.timeToStartServices}
                 onChange={handleChange}
               />
             </div>
@@ -107,19 +160,25 @@ export default function WorkForm({ data, handleClose, handleSubmit }: Props) {
           <div className={styles.formHeader}>
             <div>
               <label htmlFor="equipment">Equipment</label>
-              <input
+              <select
                 id="equipment"
                 name="equipment"
                 value={report.equipment}
                 onChange={handleChange}
-              />
+              >
+                <option>Seleccionar</option>
+                {list.equipment.map((equipment) => (
+                  <option value={equipment}>{equipment}</option>
+                ))}
+              </select>
             </div>
             <div>
               <label htmlFor="dateOfRepair">Date of repair</label>
               <input
                 id="dateOfRepair"
                 name="dateOfRepair"
-                value={report.dateOfRepair}
+                type="date"
+                // value={report.dateOfRepair}
                 onChange={handleChange}
               />
             </div>
@@ -128,7 +187,8 @@ export default function WorkForm({ data, handleClose, handleSubmit }: Props) {
               <input
                 id="timeFinishService"
                 name="timeFinishService"
-                value={report.timeFinishService}
+                type="date"
+                // value={report.timeFinishService}
                 onChange={handleChange}
               />
             </div>
@@ -170,6 +230,7 @@ export default function WorkForm({ data, handleClose, handleSubmit }: Props) {
                 name="mechanicName"
                 value={report.mechanicName}
                 onChange={handleChange}
+                disabled={true}
               />
             </div>
           </div>
@@ -190,98 +251,75 @@ export default function WorkForm({ data, handleClose, handleSubmit }: Props) {
                 <RowInput
                   key={i}
                   data={data}
-                  handleChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeRow(event, i)}
+                  parts={list.parts}
+                  handleChange={(
+                    event: React.ChangeEvent<
+                      HTMLInputElement | HTMLSelectElement
+                    >
+                  ) => handleChangeRow(event, i)}
                 />
               ))}
-              <tr><button type="button" onClick={handleAddRow}>+</button></tr>
+              <tr>
+                <button type="button" onClick={handleAddRow}>
+                  +
+                </button>
+              </tr>
               <tr>
                 <td>Tires Tread Depp</td>
-                <td>
-                  <input
-                    id="col2"
-                    value={""}
-                    placeholder=" Time"
-                    onChange={handleChange}
+              </tr>
+              <tr>
+                <td className={styles.flex}>
+                  <Checkbox
+                    name="RIF"
+                    label="RIF"
+                    value={report.check.RIF}
+                    handleCheck={handleCheck}
                   />
-                </td>
-                <td>
-                  <input
-                    id="col3"
-                    value={""}
-                    placeholder=" Part"
-                    onChange={handleChange}
+                  <Checkbox
+                    name="ROF"
+                    label="ROF"
+                    value={report.check.ROF}
+                    handleCheck={handleCheck}
                   />
-                </td>
-                <td>
-                  <input
-                    id="col4"
-                    value={""}
-                    placeholder=" Total"
-                    onChange={handleChange}
+                  <Checkbox
+                    name="RIR"
+                    label="RIR"
+                    value={report.check.RIR}
+                    handleCheck={handleCheck}
+                  />
+                  <Checkbox
+                    name="ROR"
+                    label="ROR"
+                    value={report.check.ROR}
+                    handleCheck={handleCheck}
                   />
                 </td>
               </tr>
               <tr>
                 <td className={styles.flex}>
-                  <span>RIF</span>
-                  <span>ROF</span>
-                  <span>RIR</span>
-                  <span>ROR</span>
-                </td>
-                <td>
-                  <input
-                    id="col2"
-                    value={""}
-                    placeholder=" Time"
-                    onChange={handleChange}
+                  <Checkbox
+                    name="LIF"
+                    label="LIF"
+                    value={report.check.LIF}
+                    handleCheck={handleCheck}
                   />
-                </td>
-                <td>
-                  <input
-                    id="col3"
-                    value={""}
-                    placeholder=" Part"
-                    onChange={handleChange}
+                  <Checkbox
+                    name="LOF"
+                    label="LOF"
+                    value={report.check.LOF}
+                    handleCheck={handleCheck}
                   />
-                </td>
-                <td>
-                  <input
-                    id="col4"
-                    value={""}
-                    placeholder=" Total"
-                    onChange={handleChange}
+                  <Checkbox
+                    name="LIR"
+                    label="LIR"
+                    value={report.check.LIR}
+                    handleCheck={handleCheck}
                   />
-                </td>
-              </tr>
-              <tr>
-                <td className={styles.flex}>
-                  <span>LIF</span>
-                  <span>LOF</span>
-                  <span>LIR</span>
-                  <span>LOR</span>
-                </td>
-                <td>
-                  <input
-                    id="col2"
-                    value={""}
-                    placeholder=" Time"
-                    onChange={handleChange}
-                  />
-                </td>
-                <td>
-                  <input
-                    id="col3"
-                    value={""}
-                    placeholder=" Part"
-                    onChange={handleChange}
-                  />
-                </td>
-                <td>
-                  <input
-                    id="col4"
-                    value={""}
-                    placeholder=" Total"
-                    onChange={handleChange}
+                  <Checkbox
+                    name="LOR"
+                    label="LOR"
+                    value={report.check.LOR}
+                    handleCheck={handleCheck}
                   />
                 </td>
               </tr>
@@ -293,50 +331,48 @@ export default function WorkForm({ data, handleClose, handleSubmit }: Props) {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
 interface RowProps {
   data: TableData;
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  parts: string[];
+  handleChange: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
 }
 
-function RowInput({ data, handleChange }: RowProps) {
+function RowInput({ data, parts, handleChange }: RowProps) {
   return (
     <tr>
       <td>
+        <input name="code" value={data.code} onChange={handleChange} />
         <input
-          id="code"
-          value={data.code}
-          onChange={handleChange}
-        />
-        <input
-          id="workDescription"
+          name="workDescription"
           value={data.workDescription}
           onChange={handleChange}
         />
       </td>
       <td>
         <input
-          id="laborTime"
+          name="laborTime"
+          type="number"
+          step="0.5"
           value={data.laborTime}
           onChange={handleChange}
         />
       </td>
       <td>
-        <input
-          id="parts"
-          value={data.parts}
-          onChange={handleChange}
-        />
+        <select name="parts" value={data.parts} onChange={handleChange}>
+          <option>Seleccionar</option>
+          {parts.map((part) => (
+            <option value={part}>{part}</option>
+          ))}
+        </select>
       </td>
       <td>
-        <input
-          id="total"
-          value={data.total}
-          onChange={handleChange}
-        />
+        <input name="total" value={data.total} onChange={handleChange} />
       </td>
     </tr>
-  )
+  );
 }
