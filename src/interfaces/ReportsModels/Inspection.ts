@@ -10,51 +10,51 @@ export interface Inspection {
   location: string;
   equipment: string;
   ownerOrLessor: string;
-  ok1: string;
+  ok1: boolean;
   repair1: string;
   labor1: string;
   material1: string;
-  ok2: string;
+  ok2: boolean;
   repair2: string;
   labor2: string;
   material2: string;
-  ok3: string;
+  ok3: boolean;
   repair3: string;
   labor3: string;
   material3: string;
-  ok4: string;
+  ok4: boolean;
   repair4: string;
   labor4: string;
   material4: string;
-  ok5: string;
+  ok5: boolean;
   repair5: string;
   labor5: string;
   material5: string;
-  ok6: string;
+  ok6: boolean;
   repair6: string;
   labor6: string;
   material6: string;
-  ok7: string;
+  ok7: boolean;
   repair7: string;
   labor7: string;
   material7: string;
-  ok8: string;
+  ok8: boolean;
   repair8: string;
   labor8: string;
   material8: string;
-  ok9: string;
+  ok9: boolean;
   repair9: string;
   labor9: string;
   material9: string;
-  ok10: string;
+  ok10: boolean;
   repair10: string;
   labor10: string;
   material10: string;
-  ok11: string;
+  ok11: boolean;
   repair11: string;
   labor11: string;
   material11: string;
-  ok12: string;
+  ok12: boolean;
   repair12: string;
   labor12: string;
   material12: string;
@@ -82,51 +82,51 @@ export const initInspection = (): Inspection => ({
   location: "",
   equipment: "",
   ownerOrLessor: "",
-  ok1: "",
+  ok1: false,
   repair1: "",
   labor1: "",
   material1: "",
-  ok2: "",
+  ok2: false,
   repair2: "",
   labor2: "",
   material2: "",
-  ok3: "",
+  ok3: false,
   repair3: "",
   labor3: "",
   material3: "",
-  ok4: "",
+  ok4: false,
   repair4: "",
   labor4: "",
   material4: "",
-  ok5: "",
+  ok5: false,
   repair5: "",
   labor5: "",
   material5: "",
-  ok6: "",
+  ok6: false,
   repair6: "",
   labor6: "",
   material6: "",
-  ok7: "",
+  ok7: false,
   repair7: "",
   labor7: "",
   material7: "",
-  ok8: "",
+  ok8: false,
   repair8: "",
   labor8: "",
   material8: "",
-  ok9: "",
+  ok9: false,
   repair9: "",
   labor9: "",
   material9: "",
-  ok10: "",
+  ok10: false,
   repair10: "",
   labor10: "",
   material10: "",
-  ok11: "",
+  ok11: false,
   repair11: "",
   labor11: "",
   material11: "",
-  ok12: "",
+  ok12: false,
   repair12: "",
   labor12: "",
   material12: "",

@@ -35,6 +35,8 @@ export default function InspectionForm({
     setError({ ...error, [event.target.name]: "" });
   }
 
+  function handleCheck(event: React.ChangeEvent<HTMLInputElement>) {}
+
   // Sbubmit data
   function handleLocalSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -145,8 +147,9 @@ export default function InspectionForm({
                 <td>
                   <input
                     name="ok1"
-                    value={report.ok1}
-                    onChange={handleChange}
+                    type="checkbox"
+                    checked={report.ok1}
+                    onChange={handleCheck}
                   />
                 </td>
                 <td>
@@ -176,8 +179,9 @@ export default function InspectionForm({
                 <td>
                   <input
                     name="ok2"
-                    value={report.ok2}
-                    onChange={handleChange}
+                    type="checkbox"
+                    checked={report.ok2}
+                    onChange={handleCheck}
                   />
                 </td>
                 <td>
@@ -207,8 +211,9 @@ export default function InspectionForm({
                 <td>
                   <input
                     name="ok3"
-                    value={report.ok3}
-                    onChange={handleChange}
+                    type="checkbox"
+                    checked={report.ok3}
+                    onChange={handleCheck}
                   />
                 </td>
                 <td>
@@ -238,8 +243,9 @@ export default function InspectionForm({
                 <td>
                   <input
                     name="ok4"
-                    value={report.ok4}
-                    onChange={handleChange}
+                    type="checkbox"
+                    checked={report.ok4}
+                    onChange={handleCheck}
                   />
                 </td>
                 <td>
@@ -269,8 +275,9 @@ export default function InspectionForm({
                 <td>
                   <input
                     name="ok5"
-                    value={report.ok5}
-                    onChange={handleChange}
+                    type="checkbox"
+                    checked={report.ok5}
+                    onChange={handleCheck}
                   />
                 </td>
                 <td>
@@ -300,8 +307,9 @@ export default function InspectionForm({
                 <td>
                   <input
                     name="ok6"
-                    value={report.ok6}
-                    onChange={handleChange}
+                    type="checkbox"
+                    checked={report.ok6}
+                    onChange={handleCheck}
                   />
                 </td>
                 <td>
@@ -331,8 +339,9 @@ export default function InspectionForm({
                 <td>
                   <input
                     name="ok7"
-                    value={report.ok7}
-                    onChange={handleChange}
+                    type="checkbox"
+                    checked={report.ok7}
+                    onChange={handleCheck}
                   />
                 </td>
                 <td>
@@ -362,8 +371,9 @@ export default function InspectionForm({
                 <td>
                   <input
                     name="ok8"
-                    value={report.ok8}
-                    onChange={handleChange}
+                    type="checkbox"
+                    checked={report.ok8}
+                    onChange={handleCheck}
                   />
                 </td>
                 <td>
@@ -393,8 +403,9 @@ export default function InspectionForm({
                 <td>
                   <input
                     name="ok9"
-                    value={report.ok9}
-                    onChange={handleChange}
+                    type="checkbox"
+                    checked={report.ok9}
+                    onChange={handleCheck}
                   />
                 </td>
                 <td>
@@ -424,8 +435,9 @@ export default function InspectionForm({
                 <td>
                   <input
                     name="ok10"
-                    value={report.ok10}
-                    onChange={handleChange}
+                    type="checkbox"
+                    checked={report.ok10}
+                    onChange={handleCheck}
                   />
                 </td>
                 <td>
@@ -455,8 +467,9 @@ export default function InspectionForm({
                 <td>
                   <input
                     name="ok11"
-                    value={report.ok11}
-                    onChange={handleChange}
+                    type="checkbox"
+                    checked={report.ok11}
+                    onChange={handleCheck}
                   />
                 </td>
                 <td>
@@ -486,8 +499,9 @@ export default function InspectionForm({
                 <td>
                   <input
                     name="ok12"
-                    value={report.ok12}
-                    onChange={handleChange}
+                    type="checkbox"
+                    checked={report.ok12}
+                    onChange={handleCheck}
                   />
                 </td>
                 <td>
